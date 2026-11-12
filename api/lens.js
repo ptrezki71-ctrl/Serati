@@ -36,7 +36,7 @@ function parseModelJson(text) {
   try { return JSON.parse(m[0]); } catch (e) { return null; }
 }
 
-const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-lite-latest", "gemini-3.7-flash", "gemini-flash-latest", "gemini-3.8-flash"]
+const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-3.8-flash", "gemini-3.7-flash", "gemini-flash-latest"]
   .filter((m, i, a) => m && a.indexOf(m) === i);
 
 function shouldTryNextModel(status, message) {
@@ -50,42 +50,57 @@ function shouldTryNextModel(status, message) {
 const PER_TRY_MS = Number(process.env.LENS_TRY_MS) || 9000;   // batas tunggu per model
 const TOTAL_MS = Number(process.env.LENS_TOTAL_MS) || 27000;  // batas tunggu keseluruhan
 
+async function callGemini(key, model, image, mediaType, wait, useThinking) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), wait);
+  const generationConfig = { responseMimeType: "application/json" };
+  if (useThinking) generationConfig.thinkingConfig = { thinkingLevel: "low" };   // berpikir singkat → lebih cepat
+  try {
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
+      method: "POST",
+      headers: { "x-goog-api-key": key, "content-type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ inlineData: { mimeType: mediaType, data: image } }, { text: PROMPT }] }],
+        generationConfig
+      }),
+      signal: ctrl.signal
+    });
+    if (r.ok) {
+      const data = await r.json();
+      const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+      return { status: 200, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+    }
+    let message = "";
+    try { const e = await r.json(); message = String((e && e.error && (e.error.message || e.error.status)) || ""); } catch (e) {}
+    return { status: r.status, message: message.slice(0, 300) };
+  } catch (e) {
+    const timeout = e && e.name === "AbortError";
+    return { status: timeout ? 504 : 502, message: timeout ? "tidak menjawab dalam " + Math.round(wait / 1000) + " detik" : String((e && e.message) || e).slice(0, 200) };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function askGemini(key, image, mediaType, attempts = []) {
   const deadline = Date.now() + TOTAL_MS;
-  for (const model of GEMINI_MODELS()) {
-    const left = deadline - Date.now();
-    if (left < 2500) break;
-    const wait = Math.min(PER_TRY_MS, left);
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), wait);
-    const generationConfig = { responseMimeType: "application/json" };
-    if (/^gemini-2\.5-/.test(model)) generationConfig.thinkingConfig = { thinkingBudget: 0 };  // tanpa "berpikir" → jauh lebih cepat
-    try {
-      const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
-        method: "POST",
-        headers: { "x-goog-api-key": key, "content-type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ inlineData: { mimeType: mediaType, data: image } }, { text: PROMPT }] }],
-          generationConfig
-        }),
-        signal: ctrl.signal
-      });
-      if (r.ok) {
-        const data = await r.json();
-        const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-        attempts.push({ model, status: 200 });
-        return { status: 200, attempts, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+  let queue = GEMINI_MODELS();
+  for (let round = 1; round <= 2 && queue.length; round++) {
+    const busy = [];
+    for (const model of queue) {
+      const left = deadline - Date.now();
+      if (left < 2500) break;
+      const wait = Math.min(PER_TRY_MS, left);
+      let r = await callGemini(key, model, image, mediaType, wait, true);
+      if (r.status === 400 && /thinking/i.test(r.message || "")) {          // model tidak mendukung pengaturan berpikir → ulang tanpa itu
+        r = await callGemini(key, model, image, mediaType, Math.min(PER_TRY_MS, Math.max(1000, deadline - Date.now())), false);
       }
-      let message = "";
-      try { const e = await r.json(); message = String((e && e.error && (e.error.message || e.error.status)) || ""); } catch (e) {}
-      attempts.push({ model, status: r.status, message: message.slice(0, 300) });
-      if (!shouldTryNextModel(r.status, message)) return { status: r.status, attempts };
-    } catch (e) {
-      const timeout = e && e.name === "AbortError";
-      attempts.push({ model, status: timeout ? 504 : 502, message: timeout ? "tidak menjawab dalam " + Math.round(wait / 1000) + " detik" : String((e && e.message) || e).slice(0, 200) });
-    } finally {
-      clearTimeout(timer);
+      attempts.push(Object.assign({ model, putaran: round }, r.status === 200 ? { status: 200 } : { status: r.status, message: r.message }));
+      if (r.status === 200) return { status: 200, attempts, text: r.text };
+      if (r.status === 503 || r.status === 504) busy.push(model);
+      if (!shouldTryNextModel(r.status, r.message || "")) return { status: r.status, attempts };
     }
+    queue = busy;                                                             // putaran kedua: ulangi model yang tadi sibuk
+    if (queue.length && deadline - Date.now() > 4000) await new Promise(res => setTimeout(res, 1500));
   }
   const last = attempts[attempts.length - 1] || { status: 504 };
   return { status: last.status, attempts };
