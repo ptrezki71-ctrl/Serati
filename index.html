@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serati – Kenali, pelajari, dan pesan upakara Bali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#3A2BD8; --indigo-d:#2A1FA8; --magenta:#E2357F; --orange:#F7931E; --leaf:#1F8A5B;
+  --ink:#16123A; --muted:#5F5A7E; --faint:#8E8AA8; --bg:#F6F5FA; --surface:#FFFFFF; --line:#E5E2F0; --soft:#F0EEF8;
+  --okbg:#E3F5EC; --ok:#17784F; --warnbg:#FFF2E2; --warn:#9A5200; --wa:#1E9E58;
+  --display:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,sans-serif;
+  --body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --shadow:0 1px 2px rgba(22,18,58,.04),0 8px 24px -12px rgba(22,18,58,.12);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#F1EFFF; --muted:#ABA6CC; --faint:#7F7AA3; --bg:#100D26; --surface:#1A163A; --line:#2E2860; --soft:#231E4A;
+    --okbg:#173A2C; --ok:#62D6A3; --warnbg:#3D2A12; --warn:#FFB45C; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F1EFFF; --muted:#ABA6CC; --faint:#7F7AA3; --bg:#100D26; --surface:#1A163A; --line:#2E2860; --soft:#231E4A;
+  --okbg:#173A2C; --ok:#62D6A3; --warnbg:#3D2A12; --warn:#FFB45C; --shadow:none; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+img,video{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.015em;margin:0}
+h2{font-size:26px;font-weight:800;line-height:1.15}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* Top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0}
+.brand .mark{width:34px;height:34px;border-radius:10px;background:var(--indigo);display:grid;place-items:center}
+.brand b{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.02em}
+.brand small{display:block;font-size:10.5px;color:var(--faint);font-weight:600;margin-top:-3px}
+.tnav{display:none;gap:4px;margin-left:12px}
+.tnav button{border:0;background:none;padding:8px 12px;border-radius:10px;font-weight:600;font-size:14px;color:var(--muted)}
+.tnav button[aria-current="page"]{color:var(--indigo);background:var(--soft)}
+.tnav .lensbtn{background:var(--indigo);color:#fff}
+.tnav .lensbtn[aria-current="page"]{background:var(--indigo-d);color:#fff}
+.tools{margin-left:auto;display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:7px 11px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.iconbtn{position:relative;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.iconbtn .count{position:absolute;top:-5px;right:-5px;background:var(--magenta);color:#fff;font-size:10.5px;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+.motifbar{height:4px;background:linear-gradient(90deg,var(--indigo) 0 25%,var(--magenta) 25% 50%,var(--orange) 50% 75%,#2F8CF0 75%)}
+@media (min-width:920px){.tnav{display:flex}.locchip-m{display:none}}
+@media (max-width:919px){.locchip-d{display:none}.brand small{display:none}}
+
+main{padding:24px 0 120px}
+@media (min-width:920px){main{padding-bottom:64px}}
+
+/* Bottom nav (mobile) */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.bottom div{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto}
+nav.bottom button{border:0;background:none;padding:8px 2px 10px;font-size:11px;font-weight:600;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-current="page"]{color:var(--indigo)}
+nav.bottom .lens{position:relative}
+nav.bottom .lens span.ring{width:50px;height:50px;margin-top:-22px;border-radius:16px;background:var(--indigo);color:#fff;display:grid;place-items:center;box-shadow:0 8px 20px -8px rgba(58,43,216,.7);border:4px solid var(--surface)}
+nav.bottom .lens span.ring svg{width:24px;height:24px}
+@media (min-width:920px){nav.bottom{display:none}}
+
+/* Common */
+.btn{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;background:var(--indigo);color:#fff;font-weight:700;padding:12px 18px;border-radius:12px;font-size:15px;text-decoration:none}
+.btn:hover{background:var(--indigo-d)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--soft)}
+.btn.sm{padding:8px 13px;font-size:13.5px;border-radius:10px}
+.btn.wide{width:100%}
+.btn.wa{background:var(--wa)}
+.btn.pink{background:var(--magenta)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--indigo);font-weight:700;font-size:14px}
+.link.danger{color:var(--magenta)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.soft{background:var(--soft);color:var(--indigo)}
+.note{font-size:12.5px;color:var(--muted)}
+.sect{margin-top:36px}
+.sect-h{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:14px}
+label.f{display:block;font-weight:600;font-size:13.5px;margin:12px 0 6px}
+select,input[type=text],input[type=search],textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+textarea{resize:vertical;min-height:80px}
+.empty{text-align:center;padding:28px 18px;border:1.5px dashed var(--line);border-radius:var(--r-lg);color:var(--muted);background:var(--surface)}
+.grid{display:grid;gap:16px}
+
+/* Hero */
+.hero{display:grid;gap:28px;align-items:center;grid-template-columns:1fr}
+@media (min-width:920px){.hero{grid-template-columns:1.1fr .9fr}}
+.hero h1{font-size:clamp(32px,5vw,50px);font-weight:800;line-height:1.04;letter-spacing:-.03em}
+.hero p.lead{font-size:17px;color:var(--muted);margin-top:14px;max-width:46ch}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.vf{position:relative;aspect-ratio:4/3.4;border-radius:28px;background:#14103A;overflow:hidden;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:22px}
+.vf .grid9{position:absolute;inset:0;display:grid;grid-template-columns:repeat(2,1fr);gap:2px;opacity:.9}
+.vf .grid9 div{display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.01em}
+.vf .corner{position:absolute;width:44px;height:44px;border:4px solid #fff;opacity:.95}
+.vf .c1{top:44px;left:44px;border-right:0;border-bottom:0;border-radius:12px 0 0 0}
+.vf .c2{top:44px;right:44px;border-left:0;border-bottom:0;border-radius:0 12px 0 0}
+.vf .c3{bottom:110px;left:44px;border-right:0;border-top:0;border-radius:0 0 0 12px}
+.vf .c4{bottom:110px;right:44px;border-left:0;border-top:0;border-radius:0 0 12px 0}
+.vf .scan{position:absolute;left:44px;right:44px;top:44px;height:3px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:scan 3.2s ease-in-out infinite}
+@keyframes scan{0%{transform:translateY(0)}50%{transform:translateY(170px)}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){.vf .scan{animation:none;display:none}}
+.vf .res{position:relative;background:rgba(255,255,255,.96);color:#16123A;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.vf .res b{font-family:var(--display);font-size:17px}
+.vf .res .bar{height:6px;border-radius:3px;background:#ECEAFD;margin-top:6px;overflow:hidden}
+.vf .res .bar i{display:block;height:100%;width:92%;background:var(--leaf)}
+
+/* Category tiles */
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (min-width:920px){.cats{grid-template-columns:repeat(4,1fr)}}
+.cat{text-align:left;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+.cat .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center}
+.cat .ico svg{width:24px;height:24px}
+.cat p{font-size:13px;color:var(--muted)}
+.cat .n{font-size:12.5px;font-weight:700}
+
+.how{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.how{grid-template-columns:repeat(3,1fr)}}
+.how .card{display:flex;gap:14px}
+.how .num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--soft);color:var(--indigo);display:grid;place-items:center;font-weight:800;font-family:var(--display)}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px}
+.stat b{display:block;font-family:var(--display);font-size:28px;font-weight:800;letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.big{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.stat.big span{color:#fff;opacity:.85}
+
+/* Catalog */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.filters button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:13.5px}
+.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.filters button span{color:var(--faint);font-weight:500;margin-left:4px}
+.filters button[aria-pressed="true"] span{color:var(--bg);opacity:.7}
+.search{position:relative;max-width:420px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--faint)}
+.search input{padding-left:38px}
+.items{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.item{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);overflow:hidden;padding:0;box-shadow:var(--shadow);transition:transform .15s ease, box-shadow .15s ease}
+.item:hover{transform:translateY(-2px);box-shadow:0 12px 28px -14px rgba(22,18,58,.3)}
+@media (prefers-reduced-motion: reduce){.item{transition:none}.item:hover{transform:none}}
+.item .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.item h3{font-size:16.5px}
+.item p{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item .foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:6px;font-size:13px;font-weight:700}
+
+/* Media */
+.media{position:relative;aspect-ratio:4/3;background:var(--soft);overflow:hidden}
+.media img,.media video{width:100%;height:100%;object-fit:cover}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:12px}
+.ph::before{content:"";position:absolute;inset:0;opacity:.55;background-image:repeating-linear-gradient(135deg,transparent 0 14px,rgba(255,255,255,.55) 14px 16px)}
+.ph svg{position:relative;width:46px;height:46px;opacity:.9}
+.ph span{position:relative;font-size:11.5px;font-weight:700;opacity:.85}
+.media .catb{position:absolute;top:10px;left:10px}
+.media .cnt{position:absolute;bottom:10px;right:10px;background:rgba(22,18,58,.75);color:#fff;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px}
+
+/* Detail */
+.crumb{display:flex;gap:6px;align-items:center;font-size:13.5px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+.crumb button{border:0;background:none;padding:0;color:var(--indigo);font-weight:600}
+.detail{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+.detail>*,.two>*,.lens-wrap>*,.hero>*{min-width:0}
+@media (min-width:920px){.detail{grid-template-columns:420px minmax(0,1fr)}.detail .left{position:sticky;top:88px;align-self:start}}
+.gal .main{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line)}
+.gal .thumbs{display:flex;gap:8px;margin-top:8px;overflow-x:auto}
+.gal .thumbs button{flex:none;width:64px;height:64px;border-radius:10px;overflow:hidden;border:2px solid transparent;padding:0;background:var(--soft)}
+.gal .thumbs button[aria-pressed="true"]{border-color:var(--indigo)}
+.gal .thumbs img{width:100%;height:100%;object-fit:cover}
+.upl{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.upl label{cursor:pointer}
+.upl input{position:absolute;width:1px;height:1px;opacity:0}
+.dh h1{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.08;letter-spacing:-.025em;margin:8px 0 4px}
+.dh .alias{color:var(--faint);font-weight:600;font-size:14px}
+.dh .lead{font-size:16.5px;margin-top:10px}
+.when{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:var(--r-md);padding:12px 14px;margin-top:14px;font-size:14px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:22px 0 18px;overflow-x:auto;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 14px;font-weight:700;font-size:14.5px;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--indigo);border-bottom-color:var(--indigo)}
+.tabs button span{font-weight:600;color:var(--faint);margin-left:4px}
+.makna{display:flex;flex-direction:column;gap:12px}
+.makna p{font-size:16px;line-height:1.7;max-width:66ch}
+.makna p:first-child::first-letter{font-family:var(--display);font-size:46px;font-weight:800;float:left;line-height:.9;margin:6px 8px 0 0;color:var(--indigo)}
+.refs{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+.refs ul{margin:8px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted)}
+.verify{display:flex;gap:10px;align-items:flex-start;background:var(--warnbg);color:var(--warn);border-radius:var(--r-md);padding:12px 14px;font-size:13.5px;margin-top:14px}
+.steps{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.stepc{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:14px;width:100%}
+.stepc .no{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:14px;color:var(--muted)}
+.stepc b{display:block;font-size:15px}
+.stepc span{font-size:14px;color:var(--muted)}
+.stepc[aria-pressed="true"]{background:var(--okbg);border-color:transparent}
+.stepc[aria-pressed="true"] .no{background:var(--ok);border-color:var(--ok);color:#fff}
+.stepc[aria-pressed="true"] b{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.75}
+.prog{height:8px;border-radius:4px;background:var(--soft);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--leaf);transition:width .3s}
+.videobox{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:#000}
+.videobox video{width:100%;max-height:420px}
+.novideo{display:flex;gap:14px;align-items:center;border:1.5px dashed var(--line);border-radius:var(--r-lg);padding:16px;background:var(--surface)}
+.novideo .play{flex:none;width:52px;height:52px;border-radius:50%;background:var(--soft);display:grid;place-items:center;color:var(--indigo)}
+.blist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.blist li label{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 13px;cursor:pointer;font-size:14.5px}
+.blist input{margin-top:3px;width:17px;height:17px;accent-color:var(--leaf)}
+.orderbox{display:grid;gap:14px;grid-template-columns:minmax(0,1fr);align-items:start}
+.orderbox>*{min-width:0}
+@media (min-width:760px){.orderbox{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mat>div{min-width:0}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);font-size:18px;font-weight:700}
+.qty output{min-width:40px;text-align:center;font-weight:800;font-size:18px;font-family:var(--display)}
+.score{display:grid;grid-template-columns:88px 1fr;gap:14px;align-items:center}
+.ring{position:relative;width:88px;height:88px}
+.ring svg{width:88px;height:88px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:19px;font-weight:800}
+.ring circle{transition:stroke-dashoffset .5s ease}
+.switch{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;font-weight:600;font-size:14px;text-align:left;margin-top:8px}
+.switch i{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.switch i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch[aria-checked="true"] i{background:var(--leaf)}
+.switch[aria-checked="true"] i::after{transform:translateX(18px)}
+.mat{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.mat:first-child{border-top:0}
+.mat .o{font-size:12px;color:var(--muted)}
+.mat .r{text-align:right;font-weight:600;white-space:nowrap}
+.swap{font-size:12px;color:var(--ok)}
+.related{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.related button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:13.5px}
+
+/* Lens */
+.lens-wrap{display:grid;gap:24px;grid-template-columns:1fr}
+@media (min-width:920px){.lens-wrap{grid-template-columns:1fr 1fr}}
+.shot{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:#14103A;color:#fff;display:flex;align-items:center;justify-content:center}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot .corner{position:absolute;width:40px;height:40px;border:4px solid #fff;opacity:.9}
+.shot .c1{top:24px;left:24px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.shot .c2{top:24px;right:24px;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.shot .c3{bottom:24px;left:24px;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.shot .c4{bottom:24px;right:24px;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.shot .hint{text-align:center;padding:24px;max-width:30ch}
+.shot .hint svg{width:48px;height:48px;margin:0 auto 10px;display:block;opacity:.9}
+.shot .busy{position:absolute;inset:0;background:rgba(20,16,58,.55);display:grid;place-items:center;font-weight:700}
+.shot .busy .scan{position:absolute;left:24px;right:24px;top:24px;height:3px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:scan2 1.6s ease-in-out infinite}
+@keyframes scan2{0%{top:24px}50%{top:calc(100% - 28px)}100%{top:24px}}
+@media (prefers-reduced-motion: reduce){.shot .busy .scan{animation:none}}
+.shotbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.shotbtns label{cursor:pointer}
+.shotbtns input{position:absolute;width:1px;height:1px;opacity:0}
+.result{border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.result .top-r{padding:18px;display:flex;flex-direction:column;gap:8px}
+.conf{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+.conf .bar{flex:1;height:8px;border-radius:4px;background:var(--soft);overflow:hidden}
+.conf .bar i{display:block;height:100%;background:var(--leaf)}
+.alts{display:flex;gap:8px;flex-wrap:wrap}
+.choice{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.choice button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:14px;display:flex;flex-direction:column;gap:4px}
+.choice button b{font-size:15px}
+.choice button span{font-size:13px;color:var(--muted)}
+
+/* Serati */
+.tmap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,72px);gap:6px}
+.tmap button{min-width:0;overflow:hidden;overflow-wrap:anywhere}
+@media (max-width:520px){.tmap{grid-template-rows:repeat(3,62px);gap:4px}.tmap button{font-size:10.5px;padding:6px;border-radius:10px}.tmap button span{font-size:10px}}
+.tmap button{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:8px;text-align:left;font-size:12.5px;font-weight:700;line-height:1.2;display:flex;flex-direction:column;justify-content:space-between}
+.tmap button span{font-weight:500;color:var(--muted);font-size:11.5px}
+.tmap button[aria-pressed="true"]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.tmap button[aria-pressed="true"] span{color:#DAD6FF}
+.srt{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+.av{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#fff;font-size:18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chips span{font-size:12px;background:var(--soft);padding:3px 9px;border-radius:999px;font-weight:600}
+.two{display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:920px){.two{grid-template-columns:380px minmax(0,1fr)}}
+.bar{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--leaf)}
+
+/* Forum */
+.post{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px;margin-bottom:10px}
+.post .who{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.post .who b{font-size:14px}
+.post .who span{color:var(--faint);font-size:12.5px}
+.post p{margin-top:6px;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}
+.reply{margin:12px 0 0 12px;padding-left:12px;border-left:2px solid var(--line)}
+.post .pa{display:flex;gap:14px;margin-top:8px}
+
+/* Cart bar */
+.addbar{position:fixed;left:0;right:0;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:15;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+.addbar[hidden]{display:none}
+.addbar>div{pointer-events:auto;width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 12px 10px 16px;box-shadow:0 14px 30px -14px rgba(22,18,58,.6)}
+.addbar strong{font-size:16px}
+.addbar span{display:block;font-size:12px;opacity:.75}
+@media (min-width:920px){.addbar{bottom:20px}}
+
+dialog{border:0;border-radius:22px;padding:22px;max-width:440px;width:calc(100% - 32px);background:var(--surface);color:var(--ink);box-shadow:0 30px 60px -20px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(16,13,38,.55)}
+dialog.big{max-width:620px}
+.stepview .num{font-family:var(--display);font-size:54px;font-weight:800;color:var(--indigo);line-height:1}
+.stepview h3{font-size:24px;margin:6px 0 8px}
+.stepview p{font-size:17px;line-height:1.6}
+.toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);opacity:0;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:14px;font-weight:600;font-size:14px;transition:all .25s;z-index:40;max-width:90vw;pointer-events:none}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <button type="button" class="brand" data-go="beranda" aria-label="Serati, beranda">
+      <span class="mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></span>
+      <span><b>Serati</b><small>Upakara Bali, dari serati lokal</small></span>
+    </button>
+    <nav class="tnav" id="tnav" aria-label="Menu utama"></nav>
+    <div class="tools">
+      <button type="button" class="chip locchip-d" data-go="serati" id="locD"></button><button type="button" class="chip locchip-m" data-go="serati" id="locM"></button>
+      <button type="button" class="iconbtn" data-go="keranjang" aria-label="Keranjang" id="cartbtn"></button>
+    </div>
+  </div>
+  <div class="motifbar" aria-hidden="true"></div>
+</header>
+<main><div class="wrap" id="view"></div></main>
+<div class="addbar" id="addbar" hidden></div>
+<nav class="bottom" aria-label="Menu utama"><div id="bnav"></div></nav>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script>
+/* ================= KONTEN UPAKARA ================= */
+const SRC = {
+  sbj:"Semeton Bali Jakarta, “Philosophy of Canang” (merujuk Lontar Yadnya Prakerti)",
+  npa:"Nyoman Putra Antara, “Perlengkapan Bebantenan” (dimuat Semeton Bali Jakarta)",
+  pkb:"Dinas Kebudayaan Provinsi Bali, Kriteria Lomba PKB XLII 2020 (gebogan buah, banten pejati, canang rebong)",
+  basa:"BASAbali Wiki, entri “Segehan Kepel”",
+  nowbali:"NOW! Bali, ulasan jenis-jenis segehan",
+  isi:"Jurnal Mudra ISI Denpasar, “Estetika Hindu pada Segehan Manca Warna”",
+  budaya:"BudayaBali.com, “Endongan and Tamiang in Kuningan”",
+  visit:"VisitBali.id, “The Tradition of Canang Sari”",
+  um:"Jurnal FIP Universitas Negeri Malang, kajian tradisi gebogan",
+  gusdur:"Prosiding Santika UIN K.H. Abdurrahman Wahid, etnomatematika gebogan"
+};
+const CAT = {
+  canang:{n:"Canang",c:"#D6336C",bg:"#FCE8EF",d:"Persembahan harian dan pelengkap banten yang berintikan sirih (porosan)."},
+  gebogan:{n:"Gebogan",c:"#D97706",bg:"#FDF0DD",d:"Susunan buah, jajan, dan bunga yang menjulang seperti gunung di atas dulang."},
+  sampian:{n:"Sampian",c:"#8A7A12",bg:"#F6F1D4",d:"Rangkaian janur yang menjadi mahkota banten atau hiasan hari raya."},
+  segehan:{n:"Segehan",c:"#3A2BD8",bg:"#ECEAFD",d:"Persembahan Bhuta Yadnya berupa nasi di atas alas daun untuk menjaga keharmonisan alam."}
+};
+const ITEMS = [
+{id:"canang-sari",cat:"canang",nama:"Canang Sari",ringkas:"Canang dua bagian: ceper berisi raka-raka di bawah dan sampian uras sari berisi bunga di atas.",kapan:"Persembahan harian; juga pada Kliwon, Purnama, Tilem, saat sembahyang di pura, dan sebagai pelengkap banten lain.",
+ makna:["Kata canang berasal dari bahasa Jawa Kuno untuk sirih yang disuguhkan kepada tamu yang sangat dihormati; sari berarti inti.","Porosan (pinang, kapur, sirih) melambangkan pemujaan kepada Tri Murti: pinang untuk Brahma, kapur untuk Siwa, dan sirih untuk Wisnu.","Plawa (dedaunan) melambangkan tumbuhnya pikiran yang suci dan tenang, bunga melambangkan ketulusan, dan uras sari melambangkan ketelitian serta permohonan agar alam tetap selaras.","Raka-raka melambangkan para dewa: pisang mas dikaitkan dengan Dewa Mahadewa dan tebu dengan Dewa Brahma. Sesari menjadi inti persembahan sekaligus penebus kekurangan."],
+ bahan:["Ceper (alas persegi dari janur) atau tamas bulat","Plawa: daun pandan harum, puring, atau andong","Porosan: sirih, kapur, dan pinang","Seiris tebu dan seiris pisang mas","Kekiping (jajan tepung beras)","Beras kuning dalam celemik","Sampian uras sari","Bunga empat warna dan kembang rampe","Minyak wangi dan sesari (uang kepeng atau koin)"],
+ langkah:[["Buat alas","Lipat janur menjadi ceper persegi lalu kuatkan sudutnya dengan semat. Bisa juga memakai tamas bulat."],["Isi plawa","Letakkan beberapa helai plawa di dasar ceper."],["Pasang porosan","Gulung sirih berisi sedikit kapur dan pinang, jepit dengan janur, lalu letakkan di atas plawa."],["Tambahkan raka-raka","Susun seiris tebu, seiris pisang mas, kekiping, dan beras kuning dalam celemik."],["Tutup dengan sampian","Letakkan sampian uras sari di atas isi ceper."],["Susun bunga","Tata bunga di atas sampian menurut arah mata angin. Susunan yang umum: putih di timur, merah di selatan, kuning di barat, biru atau hitam di utara."],["Sempurnakan","Taburkan kembang rampe di tengah, perciki minyak wangi, lalu letakkan sesari."]],
+ ciri:"Ceper kecil persegi atau bulat dengan sampian bintang/bundar di atasnya; bunga empat warna tersusun per sisi; kembang rampe hijau di tengah; ada irisan tebu, pisang, atau jajan di bawah sampian.",
+ src:["sbj","npa"],cek:"Susunan warna bunga per arah dapat berbeda antar-desa.",harga:1000,unit:"buah",calc:"canang"},
+{id:"canang-genten",cat:"canang",nama:"Canang Genten",ringkas:"Bentuk canang paling sederhana: plawa, porosan, dan bunga dalam satu tangkih, tanpa raka-raka.",kapan:"Pelengkap hampir semua banten, besar maupun kecil; juga sarana memohon anugerah dan keselamatan.",
+ makna:["Canang genten menggambarkan Tuhan dalam manifestasi Tri Murti melalui porosan.","Karena paling sederhana, canang ini menegaskan inti persembahan: sirih sebagai suguhan hormat, dedaunan sebagai ketenangan pikiran, dan bunga sebagai ketulusan."],
+ bahan:["Alas taledan, ceper, atau daun pisang segi empat","Plawa","Porosan: 1–2 lembar sirih berisi sedikit kapur dan pinang, dijepit janur","Tetuasan janur berbentuk kojong atau tangkih (uras sari bundar)","Bunga, kembang rampe, dan minyak wangi"],
+ langkah:[["Siapkan alas","Potong janur atau daun pisang menjadi segi empat."],["Letakkan plawa","Taruh beberapa helai dedaunan di atas alas."],["Buat porosan","Isi sirih dengan sedikit kapur dan pinang, gulung, lalu jepit dengan potongan janur."],["Pasang tetuasan","Letakkan kojong atau tangkih janur bundar sebagai wadah bunga."],["Isi bunga","Isi tangkih dengan bunga, lalu tambahkan kembang rampe dan minyak wangi."]],
+ ciri:"Kecil dan sederhana; hanya satu wadah bunga kerucut atau bundar; tidak ada irisan tebu, pisang, atau jajan.",
+ src:["sbj","npa","visit"],cek:"",harga:700,unit:"buah"},
+{id:"canang-burat-wangi",cat:"canang",nama:"Canang Burat Wangi",alias:"Canang Lenga Wangi–Burat Wangi",ringkas:"Seperti canang genten, ditambah tiga tangkih berisi burat wangi dan dua jenis lenga wangi.",kapan:"Hari-hari tertentu seperti Purnama, Tilem, dan Saraswati, serta pelengkap banten besar.",
+ makna:["Unsur utamanya adalah wewangian. Burat wangi dibuat dari beras, kunyit, dan air cendana, sedangkan lenga wangi putih dan hitam adalah minyak wangi.","Wewangian dipersembahkan sebagai penghormatan dan penyucian. Pasangan lenga wangi putih dan hitam kerap ditafsirkan sebagai rwa bhineda, dua hal berlawanan yang saling melengkapi."],
+ bahan:["Alas janur segi empat dengan 3 tangkih di bagian bawah","Burat wangi: beras dan kunyit dihaluskan, dicampur air cendana; kadang ditambah akar wangi","Lenga wangi hitam: kacang komak, ubi, keladi, dan pisang kayu mentah yang digosongkan lalu dihaluskan, dicampur minyak kelapa","Lenga wangi putih: menyan atau gaharu putih dan malam lebah dalam minyak kelapa","Plawa, porosan, bunga, kembang rampe","Kekiping, pisang mas, tebu"],
+ langkah:[["Buat alas dan tangkih","Buat alas janur segi empat dan jahitkan tiga tangkih kecil di bagian bawahnya."],["Siapkan burat wangi","Haluskan beras dan kunyit, campur air cendana hingga menjadi pasta, lalu isi ke tangkih pertama."],["Siapkan lenga wangi hitam","Gosongkan kacang komak, ubi, keladi, dan pisang kayu mentah; haluskan; campur dengan minyak kelapa yang sudah dipanaskan; isi ke tangkih kedua."],["Siapkan lenga wangi putih","Campurkan menyan dan malam ke minyak kelapa hangat, lalu isi ke tangkih ketiga."],["Lengkapi seperti canang genten","Tata plawa, porosan, tetuasan, dan bunga di atasnya, lalu tambahkan kekiping, pisang mas, dan tebu."]],
+ ciri:"Ada tiga wadah kecil: pasta kuning (burat wangi), minyak gelap, dan minyak bening; bagian atas seperti canang genten.",
+ src:["sbj","npa"],cek:"Tafsir rwa bhineda perlu dikonfirmasi ke pemangku.",harga:3000,unit:"buah"},
+{id:"canang-pasucian",cat:"canang",nama:"Canang Pasucian",alias:"Canang Pabersihan",ringkas:"Canang berisi perlengkapan penyucian: tepung tawar, sisig, ambuh, boreh, minyak wangi, dan kekosok.",kapan:"Pelengkap banten Dewa Yadnya, terutama saat piodalan dan upacara penyucian.",
+ makna:["Isinya meniru perlengkapan membersihkan dan merias diri: sisig untuk membersihkan gigi, ambuh untuk keramas, kekosok untuk lulur, boreh dan minyak wangi untuk mengharumkan.","Persembahan ini dimaknai sebagai sarana penyucian simbolis bagi Ida Bhatara yang dihormati, sekaligus pengingat bagi umat untuk menyucikan diri lahir dan batin."],
+ bahan:["Ceper dengan 7 celemik dan tampelan yang dijahit pada ceper","Tepung tawar","Sisig: jaja uli yang dibakar sampai gosong","Ambuh: daun kembang sepatu diiris halus","Boreh miik (bubuk wangi)","Minyak wangi","Kekosok: tepung beras diwarnai kuning kunyit","Nasi aon","Canang payasan sebagai penutup"],
+ langkah:[["Buat alas","Siapkan ceper, lalu jahitkan tujuh celemik kecil dan tampelan di atasnya."],["Isi tujuh celemik","Isi masing-masing celemik dengan tepung tawar, sisig, ambuh, boreh miik, minyak wangi, kekosok, dan nasi aon."],["Tutup","Letakkan canang payasan (plawa, porosan, sampian payasan berisi bunga) di bagian atas."]],
+ ciri:"Banyak wadah kecil (tujuh celemik) berisi bubuk berwarna: hitam (sisig), hijau (ambuh), kuning (kekosok), putih (tepung tawar).",
+ src:["npa","sbj"],cek:"Sebagian sumber menyamakan canang pasucian dengan canang pangraos; pastikan istilah yang dipakai di daerahmu.",harga:7500,unit:"buah"},
+{id:"canang-gantal",cat:"canang",nama:"Canang Gantal",ringkas:"Canang dengan tubungan gantal, yaitu tujuh lekesan sirih yang diikat menjadi satu.",kapan:"Pelengkap banten tertentu sesuai petunjuk pemangku.",
+ makna:["Gantal adalah gulungan sirih yang diikat. Dalam tradisi Bali, sirih yang diikat benang putih sering dimaknai sebagai ikatan dan kesatuan.","Makna jumlah tujuh lekesan sebaiknya ditanyakan langsung ke pemangku atau sulinggih setempat."],
+ bahan:["Alas janur atau daun pisang segi empat","Plawa","Tubungan gantal: 7 lekesan (gulungan sirih) diikat benang atau ditusuk semat","Pinang","Sampian uras metajuh","Bunga dan kembang rampe"],
+ langkah:[["Siapkan alas","Potong janur atau daun pisang segi empat, lalu letakkan plawa di atasnya."],["Buat lekesan","Gulung tujuh lekesan sirih."],["Satukan menjadi gantal","Ikat ketujuh lekesan dengan benang atau tusuk dengan semat."],["Tata isi","Letakkan tubungan gantal di atas plawa dan pinang di sampingnya."],["Tutup","Pasang sampian uras metajuh, lalu isi dengan bunga dan kembang rampe."]],
+ ciri:"Ada ikatan gulungan sirih (tujuh gulungan) yang terlihat jelas di bawah sampian.",
+ src:["npa","sbj"],cek:"Makna angka tujuh perlu dikonfirmasi.",harga:3000,unit:"buah"},
+{id:"canang-pangraos",cat:"canang",nama:"Canang Pangraos",ringkas:"Canang bertingkat dua berisi perlengkapan nginang lengkap: sirih, pinang, kapur, gambir, tembakau, dan rokok.",kapan:"Pelengkap banten pada upacara yang lebih besar.",
+ makna:["Asal kata canang adalah sirih yang disuguhkan kepada tamu terhormat. Canang pangraos menghadirkan suguhan itu secara utuh.","Raos dalam bahasa Bali berarti tutur atau bicara. Suguhan sirih-pinang lengkap ini lazim dimaknai sebagai penghormatan kepada Ida Bhatara dan leluhur, seperti menjamu tamu agung yang diajak bercengkerama."],
+ bahan:["2 taledan maplekir","Taledan pertama: kojong gambir, kojong pinang, kojong kapur, kojong tembakau, lembaran sirih di tengah, serta ceper rokok","Taledan kedua: beras kuning dan minyak wangi","Canang sari sebagai penutup"],
+ langkah:[["Buat dua taledan","Buat dua taledan dengan hiasan plekir di tepinya."],["Isi taledan pertama","Letakkan empat kojong berisi gambir, pinang, kapur, dan tembakau; susun lembaran sirih di tengah; tambahkan ceper berisi rokok."],["Isi taledan kedua","Isi dengan beras kuning dan minyak wangi."],["Susun dan tutup","Tumpuk kedua taledan, lalu letakkan canang sari di bagian paling atas."]],
+ ciri:"Dua tingkat; terlihat kojong-kojong kecil, lembaran sirih, tembakau, dan rokok; canang sari di puncak.",
+ src:["npa","sbj"],cek:"Isi rokok bisa berbeda; sesuaikan dengan kebiasaan setempat.",harga:10000,unit:"buah"},
+{id:"canang-tubungan",cat:"canang",nama:"Canang Tubungan",ringkas:"Canang dengan dua tubungan (gulungan sirih) yang disilangkan lalu diikat dengan sirih.",kapan:"Pelengkap banten sesuai petunjuk pemangku setempat.",
+ makna:["Tubungan adalah sirih yang digulung dan menjadi inti canang, sama seperti porosan pada canang lain.","Dua tubungan yang disilangkan lazim dimaknai sebagai pertemuan dan keseimbangan; tafsir ini perlu dikonfirmasi ke pemangku setempat."],
+ bahan:["Alas janur atau daun pisang segi empat","Plawa","2 tubungan sirih","Selembar sirih untuk pengikat","Sampian uras metajuh","Bunga dan kembang rampe"],
+ langkah:[["Siapkan alas dan plawa","Potong alas segi empat lalu letakkan plawa."],["Buat dua tubungan","Gulung sirih menjadi dua tubungan."],["Silangkan dan ikat","Letakkan kedua tubungan bersilangan, lalu ikat dengan selembar sirih."],["Tutup","Pasang sampian uras metajuh, isi bunga dan kembang rampe."]],
+ ciri:"Dua gulungan sirih bersilang (bentuk X) di bawah sampian.",
+ src:["npa"],cek:"Makna persilangan perlu dikonfirmasi.",harga:2500,unit:"buah"},
+{id:"canang-tadah-sukla",cat:"canang",nama:"Canang Tadah Sukla",alias:"Tadah Pawitra",ringkas:"Canang genten yang dilengkapi satu tangkih berisi umbi, kacang, dan pisang kayu goreng.",kapan:"Pelengkap banten; juga menjadi bagian dari canang rebong.",
+ makna:["Tadah berarti hidangan, sedangkan sukla atau pawitra berarti suci dan belum pernah dipakai.","Persembahan ini adalah hidangan suci dari hasil bumi (umbi-umbian dan kacang-kacangan) yang dipersembahkan sebelum dinikmati manusia."],
+ bahan:["Alas janur segi empat dengan 1 tangkih di bagian bawah","Kacang komak, ubi, keladi, dan pisang kayu mentah, semuanya digoreng","Kelengkapan canang genten: plawa, porosan, tetuasan, bunga, kembang rampe, minyak"],
+ langkah:[["Buat alas dan tangkih","Buat alas janur segi empat dan jahitkan satu tangkih di bawahnya."],["Goreng isian","Potong kecil ubi, keladi, dan pisang kayu mentah; goreng bersama kacang komak."],["Isi tangkih","Masukkan seluruh gorengan ke tangkih."],["Lengkapi","Susun plawa, porosan, tetuasan, dan bunga seperti canang genten di atasnya."]],
+ ciri:"Mirip canang genten, tetapi ada satu wadah kecil berisi potongan umbi dan kacang goreng berwarna cokelat.",
+ src:["npa"],cek:"",harga:3000,unit:"buah"},
+{id:"canang-raka",cat:"canang",nama:"Canang Raka",alias:"Canang Meraka",ringkas:"Canang di atas ceper atau tamas yang berisi jajan, pisang, dan buah-buahan.",kapan:"Pelengkap banten saat hari raya dan piodalan.",
+ makna:["Raka-raka (buah dan jajan) melambangkan para dewa dan menjadi wujud syukur atas hasil bumi.","Canang ini menghadirkan suguhan hasil kebun dan olahan pangan sebagai persembahan."],
+ bahan:["Ceper atau tamas","Jajan Bali, pisang, dan buah-buahan","Sampian sri kekili atau sampian uras","Plawa, porosan, dan bunga"],
+ langkah:[["Siapkan ceper atau tamas","Pilih ceper atau tamas yang cukup lebar untuk buah dan jajan."],["Susun raka-raka","Tata jajan, pisang, dan buah di dalam ceper."],["Pasang sampian","Letakkan sampian sri kekili atau sampian uras di atasnya."],["Lengkapi","Isi sampian dengan plawa, porosan, dan bunga."]],
+ ciri:"Lebih besar dari canang sari; isi buah dan jajan terlihat jelas; sampian di atasnya.",
+ src:["sbj","npa"],cek:"",harga:5000,unit:"buah"},
+{id:"canang-rebong",cat:"canang",nama:"Canang Rebong",ringkas:"Rangkaian bunga menjulang di atas dulang, ditancapkan pada batang pisang.",kapan:"Upacara Melasti, mendak toya ning, dan upacara besar lainnya.",
+ makna:["Bentuknya menjulang seperti gunung, makin ke atas makin mengerucut.","Selain makna filosofis, canang rebong bernilai estetis sebagai hasil kerja kreatif pembuatnya."],
+ bahan:["Dulang (contoh lomba PKB: diameter 30 cm) beralas tamas dengan maglenter dari janur","Gedebong (batang pisang kecil)","Bunga lokal: jepun, mitir (gumitir), ratna, cempaka, sandat, tunjung, dan sejenisnya","Lidi untuk menancapkan bunga","Takir berisi bija, air cendana, dan burat wangi","Kojong berisi tembakau, pinang, lekesan, dan rokok","Sampian cili serta hiasan paku pipid dan kekuung"],
+ langkah:[["Siapkan dulang","Letakkan tamas dengan maglenter janur di atas dulang."],["Tancapkan gedebong","Pasang batang pisang kecil tegak di tengah dulang."],["Rangkai bunga","Tusukkan bunga ke lidi, lalu tancapkan ke gedebong dari bawah ke atas hingga mengerucut (contoh PKB: tinggi 50 cm dari dulang)."],["Hias","Tambahkan sampian cili, paku pipid, dan kekuung."],["Lengkapi di dasar","Tata takir bija, air cendana, dan burat wangi, serta kojong tembakau, pinang, lekesan, dan rokok di sekeliling dasar."]],
+ ciri:"Tinggi dan menjulang, didominasi bunga warna-warni yang ditancapkan rapat pada batang di atas dulang.",
+ src:["pkb","npa"],cek:"",harga:35000,unit:"buah"},
+{id:"gebogan-woh-wohan",cat:"gebogan",nama:"Gebogan Woh-wohan",ringkas:"Gebogan yang didominasi buah-buahan, disusun bertingkat di atas dulang.",kapan:"Piodalan, hari raya, dan berbagai yadnya; dibawa ke pura dengan dijunjung.",
+ makna:["Bentuknya menjulang seperti gunung, makin ke atas makin mengerucut.","Buah disusun mengikuti prinsip panca rengga, yaitu lima jenis buah dari lima jenis kelahiran.","Gebogan juga bernilai estetis sebagai karya kreatif penatanya."],
+ bahan:["Dulang (contoh lomba PKB: diameter 30 cm)","Gedebong (batang pisang) dan tusuk sate","Buah lokal dari lima jenis berbeda","Jaja gina dan jaja uli goreng","Untek dan rerasmen","Sampian cili atau bundar dan sampian maglenter dari janur","Canang, porosan, bunga, kembang rampe"],
+ langkah:[["Pasang penyangga","Tancapkan gedebong di tengah dulang."],["Susun lapis bawah","Tusuk buah berukuran besar dengan tusuk sate dan pasang melingkar di bagian bawah."],["Naikkan lapisan","Lanjutkan ke atas dengan buah yang makin kecil hingga berbentuk kerucut (contoh PKB: tinggi 60 cm di atas dulang)."],["Selipkan jajan","Selingi lapisan buah dengan jaja gina, jaja uli, untek, dan rerasmen."],["Hias puncak","Pasang sampian janur di puncak, isi porosan, bunga, dan kembang rampe, lalu lengkapi dengan canang."]],
+ ciri:"Menara kerucut di atas dulang kayu, didominasi buah utuh (jeruk, salak, apel, pisang, dan lainnya), sampian janur di puncak.",
+ src:["pkb","gusdur","um"],cek:"Pembagian buah ke dalam panca rengga perlu dirinci bersama serati.",harga:250000,unit:"set",calc:"gebogan"},
+{id:"gebogan-jaja",cat:"gebogan",nama:"Gebogan Jaja",ringkas:"Gebogan yang didominasi jajan Bali, disusun bertingkat di atas dulang.",kapan:"Piodalan dan hari raya, sesuai kebiasaan desa.",
+ makna:["Bentuk menjulang seperti gunung tetap menjadi ciri utama.","Jajan dari beras dan ketan adalah olahan hasil sawah, sehingga gebogan ini lazim dimaknai sebagai syukur atas pangan dan kerja tangan manusia."],
+ bahan:["Dulang, gedebong, tusuk sate","Jajan Bali: jaja uli, jaja gina, dan jajan lain yang biasa dipakai di desamu","Sedikit buah sebagai penyeling (opsional)","Sampian janur, porosan, bunga, kembang rampe"],
+ langkah:[["Pasang penyangga","Tancapkan gedebong di tengah dulang."],["Susun jajan","Tusuk jajan dan pasang melingkar dari bawah: ukuran besar di bawah, kecil di atas."],["Bentuk kerucut","Rapikan lapisan agar mengerucut ke atas."],["Hias puncak","Pasang sampian janur berisi porosan, bunga, dan kembang rampe."]],
+ ciri:"Menara kerucut yang didominasi jajan berwarna (putih, merah muda, cokelat), bukan buah.",
+ src:["pkb","um"],cek:"Jenis jajan berbeda antar-daerah; makna perlu dikonfirmasi.",harga:200000,unit:"set"},
+{id:"gebogan-bunga",cat:"gebogan",nama:"Gebogan Bunga",ringkas:"Gebogan yang didominasi rangkaian bunga segar di atas dulang.",kapan:"Hari raya, pawai budaya, dan pelengkap upacara sesuai kebiasaan setempat.",
+ makna:["Bunga melambangkan ketulusan; susunannya yang menjulang tetap mengikuti bentuk gunung.","Sebagian masyarakat membuatnya untuk persembahan, sebagian lagi untuk hiasan dan pawai, jadi fungsinya perlu dicek di desa masing-masing."],
+ bahan:["Dulang dan gedebong","Bunga lokal: gumitir, jepun, pacar, sandat, cempaka, dan sejenisnya","Lidi atau tusuk","Daun hias dan janur","Sampian di puncak"],
+ langkah:[["Pasang penyangga","Tancapkan gedebong di tengah dulang."],["Rangkai bunga","Tusuk bunga dengan lidi, lalu tancapkan rapat dari bawah ke atas."],["Atur warna","Kelompokkan warna agar susunan terlihat seimbang."],["Hias puncak","Pasang sampian di bagian atas."]],
+ ciri:"Menara kerucut yang hampir seluruhnya bunga (oranye gumitir, putih jepun), tanpa buah besar.",
+ src:["um"],cek:"Fungsi ritual gebogan bunga perlu dikonfirmasi.",harga:175000,unit:"set"},
+{id:"gebogan-agung",cat:"gebogan",nama:"Gebogan Agung",ringkas:"Gebogan besar dan tinggi dengan isi paling lengkap: buah, jajan, dan bunga.",kapan:"Piodalan besar dan upacara penting; sering dibawa bersama dalam iring-iringan (mapeed).",
+ makna:["Bentuk gunung yang menjulang menjadi simbol utama.","Tinggi rendahnya gebogan bukan ukuran mutlak; yang utama adalah ketulusan pembuatnya. Bagian atas gebogan kadang juga dihias ayam panggang."],
+ bahan:["Dulang besar dan gedebong panjang","Buah lokal beragam (panca rengga)","Jajan Bali","Bunga segar","Sampian janur besar, porosan, kembang rampe, canang"],
+ langkah:[["Pasang penyangga","Tancapkan gedebong panjang dan kokoh di tengah dulang besar."],["Susun lapis bawah","Pasang buah besar melingkar dengan tusuk."],["Bangun ke atas","Selang-seling buah dan jajan per lapis, makin kecil ke atas."],["Hias","Selipkan bunga di sela lapisan."],["Puncak","Pasang sampian janur besar beserta porosan, bunga, dan canang."]],
+ ciri:"Jauh lebih tinggi dari gebogan biasa; campuran buah, jajan, dan bunga; sampian besar di puncak.",
+ src:["um","pkb"],cek:"Ukuran dan isi gebogan agung berbeda tiap desa.",harga:750000,unit:"set"},
+{id:"sampian-canang-sari",cat:"sampian",nama:"Sampian Canang Sari",alias:"Sampian Uras Sari",ringkas:"Sampian bundar berbentuk bintang atau bunga dari janur, wadah bunga pada canang sari.",kapan:"Setiap kali membuat canang sari.",
+ makna:["Uras sari tersusun dari jejahitan, reringgitan, dan tetuasan.","Ia melambangkan ketelitian dan panjangnya pikiran, serta permohonan agar alam tetap selaras dan seimbang."],
+ bahan:["Janur (busung) segar","Semat (lidi bambu)","Gunting atau pisau kecil"],
+ langkah:[["Potong janur","Potong janur dengan panjang sama sesuai ukuran ceper."],["Buat reringgitan","Gunting tepi janur membentuk pola hias."],["Lipat kelopak","Lipat potongan janur menjadi kelopak runcing."],["Rangkai melingkar","Susun kelopak melingkar membentuk bintang atau bunga, kuatkan dengan semat."],["Rapikan","Pastikan bagian tengah cekung untuk tempat bunga."]],
+ ciri:"Anyaman janur kuning-hijau muda berbentuk bintang atau bunga bundar, kosong tanpa makanan.",
+ src:["sbj"],cek:"Pola reringgitan berbeda antar-daerah; paling jelas dipelajari lewat video serati.",harga:500,unit:"buah"},
+{id:"sampian-sodan",cat:"sampian",nama:"Sampian Sodan",alias:"Sampian Plaus / Kepet-kepetan",ringkas:"Sampian berbentuk kipas yang menjadi puncak banten sodan (ajuman).",kapan:"Pada banten sodan atau ajuman, termasuk ajuman dalam banten pejati, dan pada tipat kelanan.",
+ makna:["Kepet berarti kipas. Pada sampian ini ditempatkan porosan, wadah lengis (minyak), bunga, dan kembang rampe.","Sebagai puncak banten sodan, sampian ini melengkapi hidangan yang dipersembahkan."],
+ bahan:["Janur","Semat","Porosan, wadah lengis, bunga, kembang rampe"],
+ langkah:[["Siapkan janur","Potong beberapa helai janur sama panjang."],["Bentuk kipas","Lipat dan susun janur bertumpuk menyerupai kipas, kuatkan dengan semat."],["Hias tepi","Buat reringgitan pada ujung-ujung janur."],["Isi","Tempatkan porosan, wadah lengis, bunga, dan kembang rampe."]],
+ ciri:"Anyaman janur melebar seperti kipas, biasanya di atas banten berisi nasi atau penek dan lauk.",
+ src:["pkb","npa"],cek:"",harga:2000,unit:"buah"},
+{id:"sampian-pejati",cat:"sampian",nama:"Sampian Pejati",alias:"Sampian Peras",ringkas:"Sampian yang melengkapi banten pejati; yang paling khas adalah sampian peras di puncak banten peras.",kapan:"Setiap banten pejati, yang dipakai untuk menyatakan kesungguhan hati melaksanakan upacara.",
+ makna:["Banten pejati terdiri dari daksina, peras, ajuman, dan tipat kelanan, dan dihaturkan sebagai pernyataan kesungguhan hati di hadapan Ida Sang Hyang Widhi Wasa.","Pada banten peras, sampian peras diletakkan paling atas lengkap dengan porosan, bunga, dan kembang rampe; ajuman dan tipat kelanan memakai sampian kepet-kepetan atau plaus."],
+ bahan:["Janur","Semat","Porosan, bunga, kembang rampe"],
+ langkah:[["Siapkan janur","Pilih janur yang masih segar dan lentur."],["Bentuk sampian peras","Rangkai janur menjadi sampian peras dengan jejahitan dan semat."],["Isi","Lengkapi dengan porosan, bunga, dan kembang rampe."],["Tempatkan","Letakkan di puncak banten peras; untuk ajuman dan tipat kelanan gunakan sampian plaus."]],
+ ciri:"Sampian janur yang lebih besar dan bertingkat, berada di puncak banten peras dalam satu set pejati.",
+ src:["pkb"],cek:"Istilah “sampian pejati” bisa merujuk ke satu set sampian; pastikan istilah setempat.",harga:8000,unit:"set"},
+{id:"sampian-gantung",cat:"sampian",nama:"Sampian Gantung",ringkas:"Hiasan janur yang digantung, biasanya berpasangan dengan lamak.",kapan:"Galungan dan Kuningan, digantung di sanggah, pelinggih, atau penjor.",
+ makna:["Sampian gantung melambangkan perlindungan dan mengajarkan umat menjaga keseimbangan batin serta keteguhan menghadapi tantangan hidup.","Ada ungkapan “sampian gantung matimpal ajak lamak”: keduanya saling melengkapi."],
+ bahan:["Janur panjang","Semat","Tali atau benang untuk menggantung"],
+ langkah:[["Siapkan janur panjang","Pilih janur panjang yang utuh."],["Buat rangkaian","Anyam dan jahit janur menjadi bentuk menjuntai bertingkat."],["Hias","Tambahkan reringgitan pada tepi."],["Pasang","Gantung bersama lamak di sanggah atau pelinggih."]],
+ ciri:"Anyaman janur menjuntai ke bawah dan tergantung, sering bersama lamak (panel janur panjang).",
+ src:["budaya"],cek:"",harga:15000,unit:"buah"},
+{id:"tamiang",cat:"sampian",nama:"Tamiang",ringkas:"Anyaman janur bundar menyerupai perisai.",kapan:"Hari raya Kuningan.",
+ makna:["Tamiang berbentuk perisai dan melambangkan perlindungan dari ancaman fisik maupun spiritual.","Ia juga melambangkan Dewata Nawa Sanga, penguasa sembilan arah, serta roda kehidupan, sekaligus pengingat pentingnya pengendalian diri."],
+ bahan:["Janur","Semat","Rangka bundar dari lidi atau janur"],
+ langkah:[["Buat rangka bundar","Bentuk lingkaran dari lidi atau janur sebagai kerangka."],["Anyam janur","Anyam janur memenuhi bidang lingkaran."],["Hias","Buat pola reringgitan yang memancar dari tengah."],["Pasang","Gantung di sanggah atau penjor saat Kuningan."]],
+ ciri:"Bundar seperti perisai atau roda dengan pola janur memancar dari tengah.",
+ src:["budaya"],cek:"",harga:10000,unit:"buah"},
+{id:"segehan-kepel-putih",cat:"segehan",nama:"Segehan Kepel Putih",ringkas:"Segehan berisi dua kepel nasi putih dengan bawang, jahe, dan garam.",kapan:"Persembahan harian, diletakkan di bawah atau di halaman.",
+ makna:["Segehan adalah bagian dari Bhuta Yadnya, persembahan untuk menjaga keharmonisan dengan unsur-unsur alam.","Kepel putih yang sederhana menjadikannya segehan paling umum dalam keseharian."],
+ bahan:["Alas segehan (ceper atau taledan) dengan tangkih","2 kepel nasi putih","Bawang, jahe, dan garam (uyah areng)","Porosan dan bunga","Tetabuhan arak atau berem (sesuai kebiasaan)"],
+ langkah:[["Siapkan alas","Buat alas dari ceper atau taledan dan sematkan tangkih."],["Buat kepel","Kepal nasi putih menjadi dua kepel."],["Isi tangkih","Isi tangkih dengan irisan bawang, jahe, dan garam."],["Lengkapi","Tambahkan porosan dan bunga."],["Haturkan","Letakkan di tempat yang dituju dan haturkan dengan tetabuhan."]],
+ ciri:"Alas daun kecil berisi dua bulatan nasi putih, irisan bawang dan jahe, sedikit garam.",
+ src:["basa"],cek:"",harga:1500,unit:"tanding"},
+{id:"segehan-putih-kuning",cat:"segehan",nama:"Segehan Putih Kuning",ringkas:"Segehan dengan satu kepel nasi putih dan satu kepel nasi kuning.",kapan:"Pelengkap banten seperti pejati, dan hari-hari tertentu.",
+ makna:["Bagian dari Bhuta Yadnya untuk menjaga keharmonisan.","Nasi putih dan kuning hadir berdampingan; makna pasangan warna ini perlu dikonfirmasi ke pemangku setempat."],
+ bahan:["Alas ituk-ituk","Kepel nasi putih dan kepel nasi kuning (kunyit)","Bawang, jahe, garam","Porosan, bunga, dan 1 canang"],
+ langkah:[["Siapkan alas","Siapkan ituk-ituk, letakkan porosan dan bunga di bagian depan."],["Tata nasi","Di belakang porosan, letakkan nasi putih di kiri dan nasi kuning di kanan."],["Lengkapi","Tambahkan bawang, jahe, dan garam."],["Tambahkan canang","Lengkapi dengan satu canang."]],
+ ciri:"Dua bulatan nasi berbeda warna, putih dan kuning, berdampingan.",
+ src:["pkb","nowbali"],cek:"Makna warna perlu dikonfirmasi.",harga:2000,unit:"tanding"},
+{id:"segehan-manca-warna",cat:"segehan",nama:"Segehan Manca Warna",ringkas:"Segehan dengan nasi lima warna: putih, merah, kuning, hitam, dan brumbun, ditata sesuai arah.",kapan:"Kajeng Kliwon dan berbagai upacara Bhuta Yadnya.",
+ makna:["Lima warna (putih, merah, kuning, hitam, brumbun) dipersembahkan untuk keharmonian kehidupan.","Setiap warna ditempatkan pada arah tertentu, sehingga persembahan ini mencerminkan keseimbangan seluruh penjuru alam."],
+ bahan:["Alas daun pisang ditumpuk bolak-balik","Tangkih untuk lauk","Nasi putih, merah, kuning, hitam, dan brumbun (campuran)","Bawang, jahe, garam","Porosan dan bunga","Tetabuhan arak atau berem"],
+ langkah:[["Siapkan alas","Tumpuk daun pisang bolak-balik dan pasang tangkih di bagian bawah."],["Warnai nasi","Siapkan nasi lima warna."],["Tata per arah","Letakkan kepel nasi sesuai arah mata angin, dengan nasi brumbun di tengah."],["Isi tangkih","Isi dengan bawang, jahe, dan garam."],["Lengkapi","Pasang porosan dan bunga di bagian atas, lalu haturkan dengan tetabuhan."]],
+ ciri:"Empat atau lima bulatan nasi berbeda warna (putih, merah, kuning, hitam) tersusun melingkar di atas daun.",
+ src:["isi","nowbali"],cek:"Urutan warna per arah bisa berbeda; ikuti petunjuk pemangku.",harga:4000,unit:"tanding"},
+{id:"segehan-cacahan",cat:"segehan",nama:"Segehan Cacahan",alias:"Segehan Cah-cahan",ringkas:"Segehan dengan nasi cacahan, yaitu nasi utuh yang tidak dikepal atau dibentuk.",kapan:"Sesuai petunjuk pemangku setempat.",
+ makna:["Bagian dari Bhuta Yadnya untuk menjaga keharmonisan dengan alam.","Perbedaannya ada pada bentuk nasi: dibiarkan tercacah, tidak dikepal seperti segehan kepel."],
+ bahan:["Alas daun atau taledan","Nasi cacahan (satu atau beberapa warna)","Bawang, jahe, garam","Porosan dan bunga"],
+ langkah:[["Siapkan alas","Siapkan alas daun atau taledan."],["Tata nasi","Letakkan nasi cacahan tanpa dikepal, sesuai warna dan arah yang dipakai di daerahmu."],["Lengkapi","Tambahkan bawang, jahe, garam, porosan, dan bunga."]],
+ ciri:"Nasi terlihat berbutir dan tersebar, bukan bulatan padat.",
+ src:["isi"],cek:"Jumlah tanding dan warna perlu dikonfirmasi.",harga:3000,unit:"tanding"},
+{id:"segehan-agung",cat:"segehan",nama:"Segehan Agung",ringkas:"Segehan paling lengkap, dipakai pada upacara besar.",kapan:"Upacara besar, sesuai petunjuk pemangku atau sulinggih.",
+ makna:["Sebagai segehan paling lengkap, segehan agung menegaskan tujuan Bhuta Yadnya dalam skala besar: memulihkan dan menjaga keharmonisan alam.","Susunan dan kelengkapannya berbeda antar-desa, jadi panduan rinci sebaiknya mengikuti petunjuk pemangku."],
+ bahan:["Beberapa tanding segehan","Kelengkapan tambahan sesuai petunjuk pemangku","Tetabuhan"],
+ langkah:[["Konsultasikan","Tanyakan kelengkapan segehan agung ke pemangku setempat."],["Siapkan tanding","Siapkan beberapa tanding segehan sesuai petunjuk."],["Tata dan haturkan","Tata di tempat upacara dan haturkan dengan tetabuhan."]],
+ ciri:"Lebih besar dan terdiri dari banyak tanding segehan sekaligus.",
+ src:["nowbali","isi"],cek:"Isi dan susunan perlu dirinci bersama pemangku.",harga:25000,unit:"set"}
+];
+const BYID = Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+/* ================= WILAYAH & SERATI (SIMULASI) ================= */
+const KAB = {
+  buleleng:{n:"Buleleng",t:"Kabupaten",kec:["Buleleng","Sukasada","Sawan","Kubutambahan","Tejakula","Seririt","Busungbiu","Banjar","Gerokgak"],unggul:["Anggur Bali","Buah lokal"],area:"1 / 2 / 2 / 5"},
+  karangasem:{n:"Karangasem",t:"Kabupaten",kec:["Karangasem","Abang","Bebandem","Manggis","Rendang","Selat","Sidemen","Kubu"],unggul:["Salak Sibetan","Kelapa"],area:"1 / 5 / 3 / 6"},
+  jembrana:{n:"Jembrana",t:"Kabupaten",kec:["Negara","Jembrana","Mendoyo","Pekutatan","Melaya"],unggul:["Kelapa dan janur","Pisang"],area:"2 / 1 / 3 / 2"},
+  tabanan:{n:"Tabanan",t:"Kabupaten",kec:["Tabanan","Kediri","Marga","Baturiti","Penebel","Kerambitan","Selemadeg","Selemadeg Barat","Selemadeg Timur","Pupuan"],unggul:["Bunga dan sayur Baturiti","Beras sawah subak"],area:"2 / 2 / 3 / 3"},
+  badung:{n:"Badung",t:"Kabupaten",kec:["Kuta","Kuta Selatan","Kuta Utara","Mengwi","Abiansemal","Petang"],unggul:["Sayur dan bunga Petang"],area:"2 / 3 / 3 / 4"},
+  bangli:{n:"Bangli",t:"Kabupaten",kec:["Bangli","Susut","Tembuku","Kintamani"],unggul:["Jeruk Kintamani","Bambu untuk semat"],area:"2 / 4 / 3 / 5"},
+  denpasar:{n:"Denpasar",t:"Kota",kec:["Denpasar Barat","Denpasar Timur","Denpasar Selatan","Denpasar Utara"],unggul:["Pusat bahan banten di pasar tradisional"],area:"3 / 2 / 4 / 4"},
+  gianyar:{n:"Gianyar",t:"Kabupaten",kec:["Gianyar","Blahbatuh","Sukawati","Ubud","Tegallalang","Tampaksiring","Payangan"],unggul:["Perajin janur","Jajan Bali"],area:"3 / 4 / 4 / 5"},
+  klungkung:{n:"Klungkung",t:"Kabupaten",kec:["Klungkung","Banjarangkan","Dawan","Nusa Penida"],unggul:["Garam tradisional Kusamba"],area:"3 / 5 / 4 / 6"}
+};
+const TOTAL_KEC = Object.values(KAB).reduce((s,k)=>s+k.kec.length,0);
+const AVC = ["#3A2BD8","#D6336C","#D97706","#1F8A5B","#2F8CF0","#8B3FD1"];
+const SERATI = [
+  ["s1","Banten Sari Merta","denpasar","Denpasar Selatan","canang gebogan sampian segehan"],
+  ["s2","Griya Upakara Kesiman","denpasar","Denpasar Timur","canang segehan"],
+  ["s3","Serati Ayu Mengwi","badung","Mengwi","canang gebogan sampian"],
+  ["s4","Banten Petang Asri","badung","Petang","canang segehan sampian"],
+  ["s5","Serati Sekar Taji","gianyar","Sukawati","canang gebogan sampian segehan"],
+  ["s6","Upakara Ubud Lestari","gianyar","Ubud","canang gebogan"],
+  ["s7","Banten Uma Sari","tabanan","Kediri","canang segehan"],
+  ["s8","Serati Bedugul Mekar","tabanan","Baturiti","canang gebogan sampian"],
+  ["s9","Banten Kintamani Asih","bangli","Kintamani","canang gebogan"],
+  ["s10","Serati Bangli Santi","bangli","Bangli","canang sampian segehan"],
+  ["s11","Banten Kusamba","klungkung","Dawan","canang segehan"],
+  ["s12","Serati Semarapura","klungkung","Klungkung","canang gebogan sampian segehan"],
+  ["s13","Banten Sibetan Lestari","karangasem","Bebandem","canang gebogan"],
+  ["s14","Serati Amlapura","karangasem","Karangasem","canang sampian segehan"],
+  ["s15","Banten Den Bukit","buleleng","Buleleng","canang gebogan sampian segehan"],
+  ["s16","Serati Seririt Sari","buleleng","Seririt","canang segehan"],
+  ["s17","Banten Negara Asri","jembrana","Negara","canang gebogan sampian"],
+  ["s18","Serati Mendoyo","jembrana","Mendoyo","canang segehan"]
+].map(([id,nama,kab,kec,lay],i)=>({id,nama,kab,kec,lay:lay.split(" "),c:AVC[i%AVC.length]}));
+
+/* Kalkulator bahan (simulasi harga) */
+const PROD = {janur:{n:"Kelompok Perajin Janur",kab:"gianyar"},bunga:{n:"Petani Bunga Gumitir",kab:"tabanan"},jajan:{n:"Dapur Jajan Bali",kab:"klungkung"},jeruk:{n:"Kelompok Tani Jeruk",kab:"bangli"},salak:{n:"Kelompok Tani Salak",kab:"karangasem"},kebun:{n:"Kebun Pisang & Tebu",kab:"tabanan"},bambu:{n:"Perajin Bambu",kab:"bangli"},impor:{n:"Toko buah & grosir",kab:null}};
+const MAT = {
+  ceper:{n:"Ceper janur",u:"pcs",h:500,p:"janur"},porosan:{n:"Porosan (sirih, kapur, pinang)",u:"pcs",h:300,p:"janur"},sampian:{n:"Sampian uras sari",u:"pcs",h:500,p:"janur"},
+  gumitir:{n:"Bunga gumitir",u:"gram",h:60,p:"bunga"},jepun:{n:"Bunga jepun",u:"kuntum",h:150,p:"bunga"},rampe:{n:"Kembang rampe",u:"porsi",h:400,p:"bunga"},
+  tebu:{n:"Irisan tebu & pisang mas",u:"porsi",h:300,p:"kebun"},biskuit:{n:"Biskuit/permen kemasan",u:"pcs",h:800,p:"impor",ganti:"kiping"},kiping:{n:"Kekiping (jajan beras)",u:"pcs",h:500,p:"jajan"},
+  batang:{n:"Gedebong (batang pisang)",u:"potong",h:5000,p:"kebun"},semat:{n:"Tusuk sate/semat bambu",u:"ikat",h:3000,p:"bambu"},
+  apel:{n:"Apel impor",u:"buah",h:4500,p:"impor",ganti:"jeruk"},pir:{n:"Pir impor",u:"buah",h:5000,p:"impor",ganti:"salak"},
+  jeruk:{n:"Jeruk siam Kintamani",u:"buah",h:2000,p:"jeruk"},salak:{n:"Salak Bali",u:"buah",h:1500,p:"salak"},pisang:{n:"Pisang (1 sisir)",u:"sisir",h:20000,p:"kebun"},
+  jaja:{n:"Jaja gina & jaja uli",u:"pcs",h:1000,p:"jajan"},canang:{n:"Canang sari",u:"pcs",h:1000,p:"janur"}
+};
+const CALC = {
+  canang:{base:{ceper:1,porosan:1,tebu:1,biskuit:1,sampian:1,gumitir:15,jepun:3,rampe:1},def:10},
+  gebogan:{base:{batang:1,semat:1,apel:12,pir:8,pisang:1,jaja:15,canang:1,sampian:1,gumitir:50},def:1}
+};
+const KOMISI=.10;
+const EXAMPLES = [
+  {id:"ex1",ex:true,topic:"canang-sari",name:"Contoh warga",kab:"gianyar",text:"Apa bedanya canang sari dengan canang genten? Di rumah kami dua-duanya dipakai, tapi saya belum paham kapan memakai yang mana.",at:0},
+  {id:"ex2",ex:true,parent:"ex1",topic:"canang-sari",name:"Contoh serati",kab:"tabanan",text:"Canang genten bentuknya paling sederhana, tanpa raka-raka. Untuk pemakaian di rumahmu, sebaiknya tanya juga pemangku setempat.",at:1},
+  {id:"ex3",ex:true,topic:"umum",name:"Contoh warga",kab:"denpasar",text:"Menjelang Galungan harga janur naik. Ada yang sudah coba pesan langsung ke perajin?",at:2}
+];
+
+/* ================= STATE ================= */
+const VIEWS=["beranda","katalog","lens","serati","diskusi","keranjang","dampak"];
+let S={view:"beranda",item:null,dtab:"makna",cat:"semua",q:"",kab:"denpasar",kec:"",cart:[],orders:[],done:{},have:{},calc:{},jadi:{},pick:{},topic:"umum",replyTo:null,photoIdx:0,lens:{file:null,url:null,busy:false,res:null,err:null,manual:null,fb:null}};
+try{const s=JSON.parse(localStorage.getItem("serati3")||"null");if(s){S.cart=s.cart||[];S.orders=s.orders||[];S.done=s.done||{};S.have=s.have||{};if(KAB[s.kab])S.kab=s.kab;S.kec=s.kec||"";}}catch(e){}
+const save=()=>{try{localStorage.setItem("serati3",JSON.stringify({cart:S.cart,orders:S.orders,done:S.done,have:S.have,kab:S.kab,kec:S.kec}))}catch(e){}};
+const rp=n=>"Rp"+Math.round(n).toLocaleString("id-ID");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const kabName=k=>KAB[k]?`${KAB[k].t} ${KAB[k].n}`:"";
+const seratiFor=(kab,cat)=>SERATI.filter(s=>s.kab===kab&&(!cat||s.lay.includes(cat)));
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.x);toast.x=setTimeout(()=>el.classList.remove("show"),2600);}
+const ago=t=>{const m=Math.round((Date.now()-t)/60000);if(m<1)return "baru saja";if(m<60)return m+" mnt lalu";const h=Math.round(m/60);if(h<24)return h+" jam lalu";return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short"});};
+const fd=d=>new Date(d).toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long"});
+
+/* ================= ICONS ================= */
+const IC={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>',
+  lens:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+  cart:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 9.5a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>',
+  cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>',
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>',
+  play:'<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  canang:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M12 6.5l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z"/></svg>',
+  gebogan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5v3"/><circle cx="12" cy="8" r="2"/><circle cx="9.5" cy="12" r="2"/><circle cx="14.5" cy="12" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="12" cy="16" r="2"/><circle cx="17" cy="16" r="2"/><path d="M5 19.5h14M9 22h6"/></svg>',
+  sampian:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/><circle cx="12" cy="12" r="3"/></svg>',
+  segehan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c0-4.5 4-8 9-8s9 3.5 9 8c-3 2.5-15 2.5-18 0z"/><circle cx="9" cy="12" r="1.6"/><circle cx="13" cy="11" r="1.6"/><circle cx="15.5" cy="13.5" r="1.6"/></svg>'
+};
+
+/* ================= BACKEND MANDIRI (tanpa Claude) ================= */
+/* Konfigurasi dibaca dari config.js. Tanpa konfigurasi, semua fitur inti tetap jalan (mode lokal). */
+const CFG=Object.assign({SUPABASE_URL:"",SUPABASE_ANON_KEY:"",LENS_ENDPOINT:"",MEDIA_BUCKET:"media",SUPABASE_JS:"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"},window.SERATI_CONFIG||{});
+function lsGet(k,d){try{const v=JSON.parse(localStorage.getItem(k)||"null");return v==null?d:v;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+const LIVE={sb:null,posts:[],media:{},forum:"local",lens:!!CFG.LENS_ENDPOINT,ready:true,me:lsGet("serati-me",null)};
+if(!LIVE.me){LIVE.me="u"+Math.random().toString(36).slice(2,10);lsSet("serati-me",LIVE.me);}
+const IMG_RE=/\.(jpe?g|png|webp)$/i, VID_RE=/\.(mp4|webm)$/i;
+function loadScript(src,ms){return new Promise(res=>{const s=document.createElement("script");let done=false;const fin=ok=>{if(!done){done=true;res(ok);}};s.src=src;s.async=true;s.onload=()=>fin(true);s.onerror=()=>fin(false);setTimeout(()=>fin(false),ms);document.head.appendChild(s);});}
+async function sbInit(){
+  LIVE.posts=lsGet("serati-forum-lokal",[]);
+  if(!(CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY)){render();return;}
+  LIVE.forum="loading";render();
+  if(!(window.supabase&&window.supabase.createClient)){const ok=await loadScript(CFG.SUPABASE_JS,12000);if(!ok||!window.supabase||!window.supabase.createClient){LIVE.forum="off";render();return;}}
+  try{LIVE.sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false}});}catch(e){LIVE.forum="off";render();return;}
+  await loadPosts(true);
+  setInterval(()=>{if(!document.hidden)loadPosts(false);},20000);
+  loadMedia();
+}
+async function loadPosts(first){
+  try{
+    const {data,error}=await LIVE.sb.from("posts").select("id,topic,parent,text,kab,name,author,created_at").order("created_at",{ascending:true}).limit(800);
+    if(error)throw error;
+    LIVE.posts=(data||[]).map(p=>({...p,at:Date.parse(p.created_at)||Date.now()}));LIVE.forum="ok";
+  }catch(e){if(first||LIVE.forum!=="ok"){LIVE.forum="slow";LIVE.posts=lsGet("serati-forum-lokal",[]);}}
+  render();
+}
+async function loadMedia(){
+  const st=LIVE.sb.storage.from(CFG.MEDIA_BUCKET);const m={};
+  await Promise.all(ITEMS.map(async it=>{
+    try{
+      const {data,error}=await st.list(it.id,{limit:50,sortBy:{column:"name",order:"asc"}});
+      if(error||!Array.isArray(data))return;
+      const url=n=>st.getPublicUrl(it.id+"/"+n).data.publicUrl;
+      const photos=data.filter(f=>f&&IMG_RE.test(f.name)).map(f=>url(f.name));
+      const vid=data.find(f=>f&&VID_RE.test(f.name));
+      if(photos.length||vid)m[it.id]={photos,video:vid?url(vid.name):null};
+    }catch(e){}
+  }));
+  LIVE.media=m;render();
+}
+const photosOf=id=>((LIVE.media[id]||{}).photos||[]);
+const videoOf=id=>(LIVE.media[id]||{}).video||null;
+const canUpload=()=>false; /* foto & video diunggah tim lewat dasbor Supabase (lihat PANDUAN) */
+
+/* ================= MEDIA RENDER ================= */
+function placeholder(it,label){
+  const c=CAT[it.cat];
+  return `<div class="ph" style="background:${c.bg};color:${c.c}">${IC[it.cat]}<span>${esc(label||"Foto asli segera hadir")}</span></div>`;
+}
+function thumb(it){
+  const ph=photosOf(it.id);
+  const inner=ph.length?`<img src="${esc(ph[0])}" alt="Foto ${esc(it.nama)}" loading="lazy">`:placeholder(it);
+  return `<div class="media">${inner}<span class="badge catb" style="background:${CAT[it.cat].bg};color:${CAT[it.cat].c}">${CAT[it.cat].n}</span>${ph.length>1?`<span class="cnt">${ph.length} foto</span>`:""}${videoOf(it.id)?`<span class="cnt" style="right:${ph.length>1?78:10}px">▶ Video</span>`:""}</div>`;
+}
+
+/* ================= NAV ================= */
+const NAV=[["beranda","Beranda","home"],["katalog","Katalog","grid"],["lens","Lens","lens"],["serati","Serati","pin"],["diskusi","Diskusi","chat"]];
+function go(view,item,opts={}){
+  S.view=view;S.item=item||null;if(item&&!opts.keepTab){S.dtab="makna";S.photoIdx=0;}
+  const h=item||view;try{if(location.hash.slice(1)!==h)history.replaceState(null,"","#"+h);}catch(e){try{location.hash=h;}catch(_){}}
+  render();if(!opts.noScroll)scrollTo(0,0);
+}
+function fromHash(){const h=(location.hash||"").slice(1);if(BYID[h]){S.view="detail";S.item=h;}else if(VIEWS.includes(h)){S.view=h;S.item=null;}}
+window.addEventListener("hashchange",()=>{fromHash();render();});
+
+/* ================= RENDER ================= */
+function render(){
+  const keep={};document.querySelectorAll("[data-keep]").forEach(el=>keep[el.dataset.keep]=el.value);
+  const fk=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.keep:null;
+  const cur=S.view==="detail"?"katalog":S.view;
+  document.getElementById("tnav").innerHTML=NAV.map(([k,l])=>`<button type="button" data-go="${k}" class="${k==="lens"?"lensbtn":""}" ${cur===k?'aria-current="page"':""}>${l}</button>`).join("")+`<button type="button" data-go="dampak" ${cur==="dampak"?'aria-current="page"':""}>Dampak</button>`;
+  document.getElementById("bnav").innerHTML=NAV.map(([k,l,i])=>k==="lens"?`<button type="button" class="lens" data-go="lens" ${cur===k?'aria-current="page"':""}><span class="ring">${IC.lens}</span>${l}</button>`:`<button type="button" data-go="${k}" ${cur===k?'aria-current="page"':""}>${IC[i]}${l}</button>`).join("");
+  document.getElementById("locD").innerHTML=`${IC.pin.replace("<svg",'<svg width="16" height="16"')} ${esc(kabName(S.kab))}`;
+  document.getElementById("locM").innerHTML=`${IC.pin.replace("<svg",'<svg width="15" height="15"')} ${esc(KAB[S.kab].n)}`;
+  document.getElementById("cartbtn").innerHTML=IC.cart+(S.cart.length?`<span class="count">${S.cart.length}</span>`:"");
+  const v=document.getElementById("view");
+  ({beranda:vHome,katalog:vKatalog,detail:vDetail,lens:vLens,serati:vSerati,diskusi:vForum,keranjang:vCart,dampak:vImpact})[S.view](v);
+  document.querySelectorAll("[data-keep]").forEach(el=>{if(keep[el.dataset.keep]!=null)el.value=keep[el.dataset.keep];if(el.id==="q")el.value=S.q;if(fk===el.dataset.keep){el.focus();try{const L=el.value.length;el.setSelectionRange(L,L);}catch(e){}}});
+  renderAddbar();
+}
+
+/* ---------- Beranda ---------- */
+function vHome(v){
+  const kabC=new Set(SERATI.map(s=>s.kab)).size;
+  const latest=LIVE.posts.slice().sort((a,b)=>b.at-a.at).slice(0,3);
+  v.innerHTML=`
+  <section class="hero">
+    <div>
+      <span class="badge soft">Bali DigiFest 2026 · Subtema d: produk lokal</span>
+      <h1 style="margin-top:14px">Kenali, pelajari, dan pesan upakara Bali dari serati di kotamu.</h1>
+      <p class="lead">Foto sebuah banten untuk tahu jenisnya, pelajari makna dan cara membuatnya, lalu beli bahan dari produsen lokal atau pesan jadi ke serati terdekat.</p>
+      <div class="cta"><button type="button" class="btn" data-go="lens">${IC.lens.replace("<svg",'<svg width="18" height="18"')} Coba Serati Lens</button><button type="button" class="btn ghost" data-go="katalog">Jelajahi ${ITEMS.length} jenis upakara</button></div>
+    </div>
+    <div class="vf" aria-hidden="true">
+      <div class="grid9">${Object.entries(CAT).map(([k,c])=>`<div style="background:${c.c};color:#fff;opacity:.92"><span style="display:flex;flex-direction:column;align-items:center;gap:6px">${IC[k].replace("<svg",'<svg width="40" height="40"')}${c.n}</span></div>`).join("")}</div>
+      <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span><span class="scan"></span>
+      <div class="res"><span style="width:40px;height:40px;border-radius:10px;background:${CAT.canang.bg};color:${CAT.canang.c};display:grid;place-items:center;flex:none">${IC.canang.replace("<svg",'<svg width="22" height="22"')}</span><div style="flex:1"><div class="small" style="color:#5F5A7E;font-weight:600">Terdeteksi</div><b>Canang Sari</b><div class="bar"><i></i></div></div></div>
+    </div>
+  </section>
+  <section class="sect"><div class="sect-h"><h2>Empat keluarga upakara</h2><button type="button" class="link" data-go="katalog">Lihat semua</button></div>
+    <div class="cats">${Object.entries(CAT).map(([k,c])=>`<button type="button" class="cat" data-cat="${k}"><span class="ico" style="background:${c.bg};color:${c.c}">${IC[k]}</span><h3>${c.n}</h3><p>${c.d}</p><span class="n" style="color:${c.c}">${ITEMS.filter(i=>i.cat===k).length} jenis</span></button>`).join("")}</div>
+  </section>
+  <section class="sect"><h2 style="margin-bottom:14px">Cara kerja Serati</h2>
+    <div class="how">
+      <div class="card"><span class="num">1</span><div><h3>Foto atau cari</h3><p class="muted small" style="margin-top:4px">Arahkan kamera ke banten. Serati Lens menebak jenisnya, atau cari langsung di katalog.</p></div></div>
+      <div class="card"><span class="num">2</span><div><h3>Pelajari maknanya</h3><p class="muted small" style="margin-top:4px">Baca filosofi, bahan, dan langkah membuatnya, lengkap dengan rujukan.</p></div></div>
+      <div class="card"><span class="num">3</span><div><h3>Beli lokal</h3><p class="muted small" style="margin-top:4px">Pesan bahan dari produsen Bali atau banten jadi dari serati di kabupatenmu.</p></div></div>
+    </div>
+  </section>
+  <section class="sect"><div class="stats">
+    <div class="stat"><b>${ITEMS.length}</b><span>jenis upakara dengan makna dan cara membuat</span></div>
+    <div class="stat"><b>${kabC}/9</b><span>kabupaten/kota punya serati mitra</span></div>
+    <div class="stat"><b>${SERATI.length}</b><span>serati mitra (simulasi)</span></div>
+    <div class="stat"><b>${new Set(SERATI.map(s=>s.kab+s.kec)).size}/${TOTAL_KEC}</b><span>kecamatan terjangkau</span></div>
+  </div></section>
+  <section class="sect"><div class="sect-h"><h2>Obrolan terbaru</h2><button type="button" class="link" data-go="diskusi">Buka diskusi</button></div>
+    ${latest.length?latest.map(p=>`<button type="button" class="post" style="display:block;width:100%;text-align:left" data-topicgo="${esc(p.topic)}"><div class="who"><b>${esc(nameOf(p))}</b><span>${esc(topicName(p.topic))} · ${ago(p.at)}</span></div><p>${esc(p.text.slice(0,180))}</p></button>`).join("")
+     :`<div class="empty">Belum ada obrolan. Mulai bertanya tentang canang, gebogan, sampian, atau segehan di ruang diskusi.</div>`}
+  </section>`;
+}
+
+/* ---------- Katalog ---------- */
+function vKatalog(v){
+  const q=S.q.trim().toLowerCase();
+  const list=ITEMS.filter(i=>(S.cat==="semua"||i.cat===S.cat)&&(!q||(i.nama+" "+(i.alias||"")+" "+i.ringkas).toLowerCase().includes(q)));
+  v.innerHTML=`<h2>Katalog upakara</h2><p class="muted" style="margin-top:6px">Setiap jenis dilengkapi makna filosofis, bahan, langkah membuat, dan rujukan.</p>
+  <div class="filters" role="group" aria-label="Kategori"><button type="button" data-cat="semua" aria-pressed="${S.cat==="semua"}">Semua<span>${ITEMS.length}</span></button>${Object.entries(CAT).map(([k,c])=>`<button type="button" data-cat="${k}" aria-pressed="${S.cat===k}">${c.n}<span>${ITEMS.filter(i=>i.cat===k).length}</span></button>`).join("")}</div>
+  <div class="search">${IC.search}<input type="search" data-keep="q" id="q" placeholder="Cari, misalnya “tamiang” atau “manca warna”" aria-label="Cari upakara"></div>
+  <div class="items" style="margin-top:18px">${list.map(i=>`<button type="button" class="item" data-item="${i.id}">${thumb(i)}<div class="body"><h3>${esc(i.nama)}</h3><p>${esc(i.ringkas)}</p><div class="foot"><span class="muted" style="font-weight:600">mulai ${rp(i.harga)}/${i.unit}</span><span style="color:var(--indigo)">Pelajari</span></div></div></button>`).join("")||`<div class="empty" style="grid-column:1/-1">Tidak ada yang cocok dengan “${esc(S.q)}”. Coba kata lain atau pilih kategori Semua.</div>`}</div>
+  <p class="note" style="margin-top:16px">Harga adalah estimasi simulasi untuk banten jadi dari serati mitra.</p>`;
+}
+
+/* ---------- Detail ---------- */
+function vDetail(v){
+  const it=BYID[S.item];if(!it){go("katalog");return;}
+  const c=CAT[it.cat];const ph=photosOf(it.id);const idx=Math.min(S.photoIdx,Math.max(0,ph.length-1));
+  const disc=threadsCount(it.id);
+  const sib=ITEMS.filter(x=>x.cat===it.cat&&x.id!==it.id);
+  v.innerHTML=`<div class="crumb"><button type="button" data-go="katalog">Katalog</button><span>/</span><button type="button" data-cat="${it.cat}">${c.n}</button><span>/</span><span>${esc(it.nama)}</span></div>
+  <div class="detail">
+    <div class="left gal">
+      <div class="main"><div class="media" style="aspect-ratio:1">${ph.length?`<img src="${esc(ph[idx])}" alt="Foto ${esc(it.nama)}">`:placeholder(it,"Foto asli dari serati mitra segera hadir")}<span class="badge catb" style="background:${c.bg};color:${c.c}">${c.n}</span></div></div>
+      ${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button type="button" data-ph="${i}" aria-pressed="${i===idx}" aria-label="Foto ${i+1}"><img src="${esc(p)}" alt=""></button>`).join("")}</div>`:""}
+      ${canUpload()?`<div class="upl"><label class="btn ghost sm">${IC.img.replace("<svg",'<svg width="16" height="16"')} Unggah foto asli<input type="file" accept="image/png,image/jpeg,image/webp" data-upphoto="${it.id}"></label><label class="btn ghost sm">${IC.play.replace('width="22" height="22"','width="14" height="14"')} Unggah video proses<input type="file" accept="video/mp4,video/webm" data-upvideo="${it.id}"></label></div><p class="note" style="margin-top:6px">Hanya kamu (pemilik) yang melihat tombol unggah. Foto dan video tampil untuk semua pengguna.</p>`:""}
+    </div>
+    <div>
+      <div class="dh"><span class="badge" style="background:${c.bg};color:${c.c}">${IC[it.cat].replace("<svg",'<svg width="14" height="14"')} ${c.n}</span>
+        <h1>${esc(it.nama)}</h1>${it.alias?`<div class="alias">Disebut juga ${esc(it.alias)}</div>`:""}
+        <p class="lead">${esc(it.ringkas)}</p>
+        <div class="when"><span aria-hidden="true">📅</span><div><b>Kapan dipakai.</b> ${esc(it.kapan)}</div></div>
+      </div>
+      <div class="tabs" role="tablist">${[["makna","Makna & filosofi"],["buat","Cara membuat"],["pesan","Bahan & pesan"],["diskusi","Diskusi"]].map(([k,l])=>`<button type="button" role="tab" data-dtab="${k}" aria-selected="${S.dtab===k}">${l}${k==="diskusi"&&disc?`<span>${disc}</span>`:""}</button>`).join("")}</div>
+      <div id="dpanel">${({makna:pMakna,buat:pBuat,pesan:pPesan,diskusi:pDiskusi})[S.dtab](it)}</div>
+      <div style="margin-top:28px"><h3 style="margin-bottom:10px">${c.n} lainnya</h3><div class="related">${sib.map(x=>`<button type="button" data-item="${x.id}">${esc(x.nama)}</button>`).join("")}</div></div>
+    </div>
+  </div>`;
+}
+function pMakna(it){
+  return `<div class="makna">${it.makna.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+  <div class="card" style="margin-top:18px;padding:16px"><h3 style="font-size:15px">Ciri yang mudah dikenali</h3><p class="muted" style="margin-top:6px;font-size:14.5px">${esc(it.ciri)}</p></div>
+  <div class="refs"><h3 style="font-size:15px">Rujukan</h3><ul>${it.src.map(k=>`<li>${esc(SRC[k])}</li>`).join("")}</ul></div>
+  <div class="verify"><span aria-hidden="true">⚠️</span><div><b>Status: draf, menunggu verifikasi serati atau pemangku.</b> Tata cara banten berbeda menurut desa, kala, patra.${it.cek?" "+esc(it.cek):""}</div></div>`;
+}
+function pBuat(it){
+  const done=S.done[it.id]||[];const n=done.filter(Boolean).length;const pct=Math.round(n/it.langkah.length*100);
+  const vid=videoOf(it.id);
+  return `${vid?`<div class="videobox"><video controls playsinline preload="metadata" src="${esc(vid)}"></video></div>`:`<div class="novideo"><span class="play">${IC.play}</span><div><b>Video proses sedang direkam bersama serati mitra</b><p class="muted small" style="margin-top:2px">Sementara itu, ikuti langkah di bawah. Ketuk tiap langkah untuk menandainya selesai.</p></div></div>`}
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px"><div style="flex:1"><div class="small" style="font-weight:700;margin-bottom:6px">${n} dari ${it.langkah.length} langkah selesai</div><div class="prog"><i style="width:${pct}%"></i></div></div><button type="button" class="btn sm" data-stepmode="0">Mode langkah demi langkah</button></div>
+  <div class="steps">${it.langkah.map(([t,d],i)=>`<button type="button" class="stepc" data-step="${i}" aria-pressed="${!!done[i]}"><span class="no">${done[i]?"✓":i+1}</span><span><b>${esc(t)}</b><span>${esc(d)}</span></span></button>`).join("")}</div>
+  ${n===it.langkah.length?`<div class="verify" style="background:var(--okbg);color:var(--ok)"><span aria-hidden="true">🎉</span><div><b>Selesai!</b> Bagikan hasilmu atau tanyakan detail di tab Diskusi. <button type="button" class="link" data-resetsteps="${it.id}">Ulangi dari awal</button></div></div>`:""}`;
+}
+function calcMats(it,n,lokal){
+  const base=CALC[it.calc].base;return Object.entries(base).map(([id,q])=>{const use=lokal&&MAT[id].ganti?MAT[id].ganti:id;return {id:use,q:q*n,swapped:use!==id?id:null};});
+}
+const matVal=l=>l.reduce((s,m)=>s+m.q*MAT[m.id].h,0);
+const matLocal=l=>{const t=matVal(l);return t?l.filter(m=>MAT[m.id].p!=="impor").reduce((s,m)=>s+m.q*MAT[m.id].h,0)/t:0;};
+function pPesan(it){
+  const have=S.have[it.id]||[];
+  const jq=S.jadi[it.id]??(it.unit==="set"?1:10);
+  const list=seratiFor(S.kab,it.cat);const pick=S.pick[it.id]&&list.some(s=>s.id===S.pick[it.id])?S.pick[it.id]:(list[0]&&list[0].id);
+  let calcHtml="";
+  if(it.calc){
+    const cs=S.calc[it.id]||{n:CALC[it.calc].def,lokal:false};const mats=calcMats(it,cs.n,cs.lokal);const sh=matLocal(mats);const C=2*Math.PI*36;
+    calcHtml=`<div class="card"><h3>Beli bahan sendiri</h3><p class="muted small" style="margin-top:4px">Kebutuhan bahan dihitung otomatis dan dipesan dari produsen lokal.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0"><span style="font-weight:600">Jumlah (${it.unit})</span><div class="qty"><button type="button" data-cq="-1" aria-label="Kurangi">−</button><output>${cs.n}</output><button type="button" data-cq="1" aria-label="Tambah">+</button></div></div>
+      <div class="score"><div class="ring"><svg viewBox="0 0 88 88"><circle cx="44" cy="44" r="36" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="44" cy="44" r="36" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-sh)}"/></svg><b>${Math.round(sh*100)}%</b></div>
+      <div><b>Skor bahan lokal</b><p class="muted small">Porsi nilai belanja yang mengalir ke produsen Bali.</p><button type="button" class="switch" role="switch" aria-checked="${cs.lokal}" data-lokal><i></i>Ganti ke bahan lokal</button></div></div>
+      <div style="margin-top:12px">${mats.map(m=>{const M=MAT[m.id],P=PROD[M.p];return `<div class="mat"><div>${esc(M.n)} <span class="badge ${M.p==="impor"?"warn":"ok"}">${M.p==="impor"?"Luar Bali":"Lokal"}</span><div class="o">${esc(P.n)}${P.kab?" · "+esc(KAB[P.kab].n):""}</div>${m.swapped?`<div class="swap">Menggantikan ${esc(MAT[m.swapped].n.toLowerCase())}</div>`:""}</div><div class="r">${m.q.toLocaleString("id-ID")} ${M.u}<div class="o">${rp(m.q*M.h)}</div></div></div>`;}).join("")}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px"><b>${rp(matVal(mats))}</b><button type="button" class="btn sm" data-addcalc="${it.id}">Beli bahan ini</button></div></div>`;
+  }
+  return `<h3 style="margin-bottom:10px">Daftar bahan</h3><p class="muted small" style="margin-bottom:10px">Centang bahan yang sudah kamu punya.</p>
+  <ul class="blist">${it.bahan.map((b,i)=>`<li><label><input type="checkbox" data-have="${i}" ${have[i]?"checked":""}><span>${esc(b)}</span></label></li>`).join("")}</ul>
+  <div class="orderbox" style="margin-top:20px">
+    <div class="card"><h3>Pesan jadi ke serati</h3><p class="muted small" style="margin-top:4px">Dibuat oleh serati di ${esc(kabName(S.kab))} dengan bahan Bali.</p>
+      ${list.length?`<label class="f" for="pk">Pilih serati</label><select id="pk" data-pick="${it.id}">${list.map(s=>`<option value="${s.id}" ${s.id===pick?"selected":""}>${esc(s.nama)} · Kec. ${esc(s.kec)}</option>`).join("")}</select>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0"><span style="font-weight:600">Jumlah (${it.unit})</span><div class="qty"><button type="button" data-jq="-1" aria-label="Kurangi">−</button><output>${jq}</output><button type="button" data-jq="1" aria-label="Tambah">+</button></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b>${rp(it.harga*jq)}</b><div class="note">${rp(it.harga)}/${it.unit} · estimasi</div></div><button type="button" class="btn sm" data-addjadi="${it.id}">Masukkan ke keranjang</button></div>`
+      :`<p class="note" style="margin-top:10px">Belum ada serati mitra untuk ${CAT[it.cat].n.toLowerCase()} di ${esc(kabName(S.kab))}. <button type="button" class="link" data-go="serati">Ganti wilayah</button></p>`}
+    </div>
+    ${calcHtml||`<div class="card"><h3>Butuh bahannya saja?</h3><p class="muted small" style="margin-top:6px">Hubungi serati di wilayahmu untuk paket bahan, atau tanyakan di tab Diskusi.</p><button type="button" class="btn ghost sm" style="margin-top:12px" data-go="serati">Lihat serati terdekat</button></div>`}
+  </div>
+  <p class="note" style="margin-top:12px">Harga, serati, dan produsen adalah data simulasi.</p>`;
+}
+function pDiskusi(it){return threadsHtml(it.id);}
+
+/* ---------- Lens ---------- */
+function vLens(v){
+  const L=S.lens;
+  const aiOK=LIVE.lens;
+  const r=L.res;const top=r&&r.id&&BYID[r.id];
+  v.innerHTML=`<h2>Serati Lens</h2><p class="muted" style="margin-top:6px;max-width:60ch">Foto canang, gebogan, sampian, atau segehan. Serati Lens menebak jenisnya lalu menampilkan makna dan cara membuatnya.</p>
+  <div class="lens-wrap" style="margin-top:18px">
+    <div>
+      <div class="shot">${L.url?`<img src="${L.url}" alt="Foto yang akan dikenali">`:`<div class="hint">${IC.cam}<b>Arahkan kamera ke banten</b><p style="opacity:.8;font-size:14px;margin-top:4px">Ambil dari atas atau samping dengan cahaya cukup. Satu banten per foto.</p></div>`}
+        <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+        ${L.busy?`<div class="busy"><span class="scan"></span><span>Mengenali…</span></div>`:""}</div>
+      <div class="shotbtns">
+        <label class="btn">${IC.cam.replace("<svg",'<svg width="18" height="18"')} Ambil foto<input type="file" accept="image/*" capture="environment" data-lensfile></label>
+        <label class="btn ghost">${IC.img.replace("<svg",'<svg width="18" height="18"')} Pilih dari galeri<input type="file" accept="image/png,image/jpeg,image/webp" data-lensfile></label>
+        ${L.url&&!L.busy?`<button type="button" class="btn pink" data-identify ${aiOK?"":"disabled"}>Kenali sekarang</button>`:""}
+      </div>
+      ${aiOK?`<p class="note" style="margin-top:10px">Foto dikirim ke server Serati untuk dikenali AI dan tidak disimpan. Bila gagal, gunakan <b>Kenali manual</b>.</p>`:`<p class="note" style="margin-top:10px">Lens AI belum diaktifkan di server ini. Gunakan <b>Kenali manual</b>.</p>`}
+    </div>
+    <div>
+      ${L.err?`<div class="verify"><span aria-hidden="true">⚠️</span><div>${esc(L.err)}</div></div>`:""}
+      ${r?(top?`<div class="result"><div style="display:grid;grid-template-columns:110px 1fr">${thumb(top).replace('class="media"','class="media" style="aspect-ratio:auto;height:100%"')}<div class="top-r"><span class="small muted" style="font-weight:700">Kemungkinan besar</span><h3 style="font-size:22px">${esc(top.nama)}</h3>
+        <div class="conf"><span>Keyakinan</span><span class="bar"><i style="width:${Math.round((r.keyakinan||0)*100)}%"></i></span><span>${Math.round((r.keyakinan||0)*100)}%</span></div></div></div>
+        <div style="padding:0 18px 18px"><p style="font-size:14.5px">${esc(r.alasan||"")}</p><p class="muted small" style="margin-top:8px">${esc(top.ringkas)}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button type="button" class="btn sm" data-item="${top.id}">Lihat makna & cara membuat</button><button type="button" class="btn ghost sm" data-itemtab="${top.id}|buat">Langsung ke langkah</button></div>
+        ${(r.alternatif||[]).filter(a=>BYID[a.id]&&a.id!==top.id).length?`<div style="margin-top:14px"><div class="small" style="font-weight:700;margin-bottom:6px">Atau mungkin</div><div class="alts">${r.alternatif.filter(a=>BYID[a.id]&&a.id!==top.id).map(a=>`<button type="button" class="chip" data-item="${a.id}">${esc(BYID[a.id].nama)} · ${Math.round((a.keyakinan||0)*100)}%</button>`).join("")}</div></div>`:""}
+        ${feedbackHtml(top)}</div></div>`
+      :`<div class="result"><div class="top-r"><h3>Belum bisa dikenali</h3><p class="muted">${esc(r.alasan||"Foto ini tidak cocok dengan jenis upakara di katalog.")}</p><p class="small" style="margin-top:6px">Coba foto ulang lebih dekat, atau gunakan Kenali manual di bawah.</p></div></div>`)
+      :`<div class="card"><h3>Hasil akan muncul di sini</h3><p class="muted small" style="margin-top:6px">Lens mengenali ${ITEMS.length} jenis: 10 canang, 4 gebogan, 5 sampian, dan 5 segehan.</p></div>`}
+      <div class="sect" style="margin-top:24px">${manualHtml()}</div>
+    </div>
+  </div>`;
+}
+function feedbackHtml(top){
+  const L=S.lens;
+  if(L.fb==="sent")return `<p class="note" style="margin-top:14px">Terima kasih, koreksimu membantu Lens belajar.</p>`;
+  return `<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px"><div class="small" style="font-weight:700">Tebakannya benar?</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" class="btn ghost sm" data-fb="ok">Ya, benar</button><select id="fbsel" style="width:auto;flex:1;min-width:180px" aria-label="Pilih jenis yang benar"><option value="">Bukan, sebenarnya…</option>${Object.entries(CAT).map(([k,c])=>`<optgroup label="${c.n}">${ITEMS.filter(i=>i.cat===k).map(i=>`<option value="${i.id}">${esc(i.nama)}</option>`).join("")}</optgroup>`).join("")}</select><button type="button" class="btn ghost sm" data-fb="fix">Kirim</button></div>
+  ${canUpload()?`<button type="button" class="link" style="margin-top:10px" data-savephoto="${top.id}">Simpan foto ini ke katalog ${esc(top.nama)}</button>`:""}</div>`;
+}
+function manualHtml(){
+  const m=S.lens.manual;
+  if(!m)return `<h3 style="margin-bottom:6px">Kenali manual</h3><p class="muted small" style="margin-bottom:12px">Jawab satu pertanyaan, lalu bandingkan cirinya.</p>
+  <div class="choice">
+    <button type="button" data-manual="canang"><b>Wadah kecil berisi bunga</b><span>Alas janur/daun dengan sampian dan bunga di atasnya.</span></button>
+    <button type="button" data-manual="gebogan"><b>Susunan tinggi di atas dulang</b><span>Buah, jajan, atau bunga menjulang seperti gunung.</span></button>
+    <button type="button" data-manual="sampian"><b>Anyaman janur saja</b><span>Bentuk bintang, kipas, perisai, atau menjuntai.</span></button>
+    <button type="button" data-manual="segehan"><b>Nasi di atas alas daun</b><span>Kepel atau butiran nasi, dengan bawang dan jahe.</span></button>
+  </div>`;
+  return `<div class="sect-h" style="margin-bottom:10px"><h3>${CAT[m].n}: mana yang paling mirip?</h3><button type="button" class="link" data-manual="">Ubah jawaban</button></div>
+  <div style="display:flex;flex-direction:column;gap:10px">${ITEMS.filter(i=>i.cat===m).map(i=>`<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><div><b>${esc(i.nama)}</b><p class="muted small" style="margin-top:4px">${esc(i.ciri)}</p></div><button type="button" class="btn sm" data-item="${i.id}">Ini dia</button></div></div>`).join("")}</div>`;
+}
+async function compress(file){
+  try{
+    const bmp=await createImageBitmap(file);const max=1280;const sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const cv=document.createElement("canvas");cv.width=Math.round(bmp.width*sc);cv.height=Math.round(bmp.height*sc);
+    cv.getContext("2d").drawImage(bmp,0,0,cv.width,cv.height);
+    return await new Promise(res=>cv.toBlob(b=>res(b||file),"image/jpeg",.86));
+  }catch(e){return file;}
+}
+function blobToB64(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]||"");r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
+async function identify(){
+  const L=S.lens;if(!L.file||!LIVE.lens||L.busy)return;
+  L.busy=true;L.err=null;L.res=null;L.fb=null;render();
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),35000);
+  try{
+    const image=await blobToB64(L.file);
+    const r=await fetch(CFG.LENS_ENDPOINT,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({image,mediaType:L.file.type||"image/jpeg"}),signal:ctrl.signal});
+    let res=null;try{res=await r.json();}catch(e){}
+    if(!r.ok)throw {code:(res&&res.error)||("http_"+r.status)};
+    if(!res||typeof res!=="object"||Array.isArray(res))throw {code:"invalid_json"};
+    if(res.id&&!BYID[res.id])res.id=null;
+    res.keyakinan=Math.max(0,Math.min(1,Number(res.keyakinan)||0));
+    res.alasan=typeof res.alasan==="string"?res.alasan.slice(0,400):"";
+    res.alternatif=Array.isArray(res.alternatif)?res.alternatif.filter(x=>x&&BYID[x.id]).map(x=>({id:x.id,keyakinan:Math.max(0,Math.min(1,Number(x.keyakinan)||0))})).slice(0,2):[];
+    L.res=res;
+  }catch(e){
+    const code=e&&(e.code||e.name);
+    const m={AbortError:"Lens terlalu lama merespons. Coba lagi.",rate_limited:"Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.",too_large:"Foto terlalu besar. Coba foto lain.",bad_request:"Format foto tidak didukung. Gunakan JPG, PNG, atau WebP.",lens_not_configured:"Lens AI belum diaktifkan di server. Gunakan Kenali manual.",http_404:"Lens AI belum aktif di alamat ini. Gunakan Kenali manual.",http_405:"Lens AI belum aktif di alamat ini. Gunakan Kenali manual.",invalid_json:"Jawaban Lens tidak terbaca. Coba lagi.",upstream_error:"Layanan AI sedang bermasalah. Coba lagi beberapa saat lagi."}[code];
+    L.err=m||"Lens belum bisa mengenali foto ini. Periksa koneksi lalu coba lagi, atau gunakan Kenali manual.";
+  }finally{clearTimeout(to);}
+  L.busy=false;render();
+}
+
+/* ---------- Serati ---------- */
+function vSerati(v){
+  const K=KAB[S.kab];const list=SERATI.filter(s=>s.kab===S.kab).sort((a,b)=>(b.kec===S.kec)-(a.kec===S.kec));
+  const kabC=new Set(SERATI.map(s=>s.kab)).size, kecC=new Set(SERATI.map(s=>s.kab+"|"+s.kec)).size;
+  v.innerHTML=`<h2>Serati di seluruh Bali</h2><p class="muted" style="margin-top:6px">Pilih kabupaten/kota dan kecamatanmu. Pesanan banten jadi diarahkan ke serati terdekat.</p>
+  <div class="two" style="margin-top:18px">
+    <div>
+      <div class="tmap" role="group" aria-label="Peta kabupaten/kota">${Object.entries(KAB).map(([k,x])=>`<button type="button" style="grid-area:${x.area}" data-kab="${k}" aria-pressed="${k===S.kab}">${x.n}<span>${SERATI.filter(s=>s.kab===k).length} serati</span></button>`).join("")}</div>
+      <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:12px"><div class="stat"><b>${kabC}/9</b><span>kabupaten/kota</span><div class="bar"><i style="width:${kabC/9*100}%"></i></div></div><div class="stat"><b>${kecC}/${TOTAL_KEC}</b><span>kecamatan</span><div class="bar"><i style="width:${kecC/TOTAL_KEC*100}%"></i></div></div></div>
+      <div class="card" style="margin-top:12px"><h3>Kekhasan ${esc(kabName(S.kab))}</h3><div class="chips">${K.unggul.map(u=>`<span>🌿 ${esc(u)}</span>`).join("")}</div><p class="muted small" style="margin-top:8px">Produk unggulan ini diprioritaskan sebagai bahan banten untuk pembeli di wilayah ini.</p></div>
+    </div>
+    <div>
+      <label class="f" for="kec" style="margin-top:0">Kecamatan di ${esc(kabName(S.kab))}</label>
+      <select id="kec" data-kec><option value="">Semua kecamatan</option>${K.kec.map(c=>`<option ${c===S.kec?"selected":""}>${esc(c)}</option>`).join("")}</select>
+      ${S.kec&&!list.some(s=>s.kec===S.kec)?`<p class="note" style="margin-top:8px">Belum ada serati mitra di Kecamatan ${esc(S.kec)}. Serati terdekat di kabupaten yang sama ditampilkan di bawah.</p>`:""}
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">${list.map(s=>`<article class="card srt"><div class="av" style="background:${s.c}" aria-hidden="true">${esc(s.nama.split(" ").map(w=>w[0]).slice(0,2).join(""))}</div><div>
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><h3>${esc(s.nama)}</h3>${s.kec===S.kec?`<span class="badge ok">Terdekat</span>`:""}</div>
+        <div class="muted small">Kec. ${esc(s.kec)}, ${esc(kabName(s.kab))}</div>
+        <div class="chips">${s.lay.map(l=>`<span style="background:${CAT[l].bg};color:${CAT[l].c}">${CAT[l].n}</span>`).join("")}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="button" class="btn wa sm" data-contact="${s.id}">Hubungi via WhatsApp</button><button type="button" class="btn ghost sm" data-orderfrom="${s.id}">Pesan banten</button></div></div></article>`).join("")}</div>
+      <div class="card" style="margin-top:12px"><h3>Kamu seorang serati?</h3><p class="muted small" style="margin-top:4px">Daftarkan usahamu supaya warga di kecamatanmu bisa memesan langsung.</p><button type="button" class="btn sm" style="margin-top:10px" data-daftar>Daftar sebagai serati</button></div>
+      <p class="note" style="margin-top:10px">Nama serati dan sebarannya adalah data simulasi untuk demo.</p>
+    </div>
+  </div>`;
+}
+function contactDialog(id){
+  const s=SERATI.find(x=>x.id===id);const d=document.getElementById("dlg");d.className="";
+  d.innerHTML=`<h3 style="font-size:22px">${esc(s.nama)}</h3><p class="muted small" style="margin-top:4px">Kec. ${esc(s.kec)}, ${esc(kabName(s.kab))}</p>
+  <div style="background:var(--soft);border-radius:14px;padding:14px;margin:14px 0"><div class="small muted">WhatsApp</div><div style="font-weight:800;font-size:18px">+62 8•• •••• ••${id.replace("s","").padStart(2,"0")}</div><div class="small muted" style="margin-top:8px">Jam layanan</div><div style="font-weight:600">08.00–17.00 WITA</div><div class="small muted" style="margin-top:8px">Melayani</div><div style="font-weight:600">${s.lay.map(l=>CAT[l].n).join(", ")}</div></div>
+  <p class="note">Prototipe: nomor disamarkan. Pada versi rilis, tombol ini membuka chat WhatsApp serati yang sudah memberi izin nomornya ditampilkan.</p>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn ghost sm" data-close>Tutup</button><button type="button" class="btn wa sm" data-close="wa">Buka WhatsApp</button></div>`;
+  d.showModal();
+}
+function daftarDialog(){
+  const d=document.getElementById("dlg");d.className="";const K=KAB[S.kab];
+  d.innerHTML=`<h3 style="font-size:22px">Daftar sebagai serati</h3>
+  <label class="f" for="dn">Nama usaha</label><input type="text" id="dn" maxlength="60">
+  <label class="f" for="dk">Kecamatan (${esc(kabName(S.kab))})</label><select id="dk">${K.kec.map(c=>`<option>${esc(c)}</option>`).join("")}</select>
+  <fieldset style="border:0;padding:0;margin:12px 0 0"><legend class="f" style="margin:0 0 6px;font-weight:600;font-size:13.5px">Layanan</legend><div class="chips">${Object.entries(CAT).map(([k,c])=>`<label style="display:flex;gap:6px;align-items:center;font-size:14px;margin-right:10px"><input type="checkbox" value="${k}" class="dl" ${k==="canang"?"checked":""}>${c.n}</label>`).join("")}</div></fieldset>
+  <p class="note" style="margin-top:12px">Kontak diverifikasi tim secara terpisah dan tidak ditampilkan di sini.</p>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn ghost sm" data-close>Batal</button><button type="button" class="btn sm" data-senddaftar>Kirim pendaftaran</button></div>`;
+  d.showModal();
+}
+
+/* ---------- Diskusi ---------- */
+const topicName=t=>t==="umum"?"Umum":(BYID[t]?BYID[t].nama:t);
+const nameOf=p=>(p.name||"Warga")+(!p.ex&&p.author===LIVE.me?" (kamu)":"");
+function threadsCount(topic){return LIVE.posts.filter(p=>p.topic===topic&&!p.parent).length+EXAMPLES.filter(p=>p.topic===topic&&!p.parent).length;}
+function threadsHtml(topic){
+  const live=LIVE.posts.filter(p=>p.topic===topic),ex=EXAMPLES.filter(p=>p.topic===topic);
+  const all=[...ex,...live];const roots=all.filter(p=>!p.parent).sort((a,b)=>(b.at||0)-(a.at||0));
+  const kids=id=>all.filter(p=>p.parent===id).sort((a,b)=>(a.at||0)-(b.at||0));
+  const canPost=LIVE.forum!=="loading";
+  const one=p=>`<div class="who"><b>${esc(nameOf(p))}</b>${p.ex?`<span class="badge soft">Contoh</span>`:""}<span>${[p.kab&&KAB[p.kab]?esc(KAB[p.kab].n):"",p.ex?"":ago(p.at)].filter(Boolean).join(" · ")}</span></div><p>${esc(p.text)}</p>`;
+  const acts=p=>`<div class="pa">${!p.parent&&canPost?`<button type="button" class="link" data-reply="${esc(p.id)}">Balas</button>`:""}${!p.ex&&LIVE.forum!=="ok"&&p.author===LIVE.me?`<button type="button" class="link danger" data-delpost="${esc(p.id)}">Hapus</button>`:""}</div>`;
+  const status={loading:"Memuat diskusi…",slow:"Server diskusi belum bisa dihubungi. Halaman mencoba lagi setiap 20 detik; sementara itu pesan baru disimpan di perangkat ini.",off:"Server diskusi tidak dapat dihubungi. Pesan disimpan di perangkat ini.",local:"Mode lokal: pesan tersimpan di perangkat ini saja. Hubungkan Supabase agar diskusi bisa dibaca semua orang.",ok:""}[LIVE.forum];
+  return `${status?`<p class="note" style="margin-bottom:10px">${status}</p>`:""}
+  ${canPost?`<div class="card" style="margin-bottom:14px"><label class="f" for="np" style="margin-top:0">${S.replyTo?"Balas diskusi":"Tanya atau berbagi tentang "+esc(topicName(topic).toLowerCase())}</label>
+    <input type="text" id="nm" data-keep="nm" maxlength="40" placeholder="Nama tampilan (misalnya Made dari Gianyar)" value="${esc(lsGet("serati-nama",""))}" style="margin-bottom:8px">
+    <textarea id="np" data-keep="np-${esc(topic)}" maxlength="600" placeholder="Tulis pertanyaan atau pengalamanmu"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap"><span class="note">Ditandai dari ${esc(kabName(S.kab))}. Jangan tulis nomor telepon atau alamat lengkap.</span><span style="display:flex;gap:8px">${S.replyTo?`<button type="button" class="btn ghost sm" data-cancelreply>Batal</button>`:""}<button type="button" class="btn sm" data-post="${esc(topic)}">Kirim</button></span></div></div>`:""}
+  ${roots.length?roots.map(p=>`<article class="post">${one(p)}${acts(p)}${kids(p.id).map(k=>`<div class="reply">${one(k)}${acts(k)}</div>`).join("")}</article>`).join(""):`<div class="empty">Belum ada diskusi tentang ${esc(topicName(topic).toLowerCase())}. Jadilah yang pertama bertanya.</div>`}`;
+}
+function vForum(v){
+  const t=S.topic;
+  v.innerHTML=`<h2>Diskusi warga</h2><p class="muted" style="margin-top:6px">Tanya jawab tentang setiap jenis canang, gebogan, sampian, dan segehan.</p>
+  <div class="two" style="margin-top:18px"><div>
+    <label class="f" for="tp" style="margin-top:0">Topik</label>
+    <select id="tp" data-topicsel><option value="umum" ${t==="umum"?"selected":""}>Umum (${threadsCount("umum")})</option>${Object.entries(CAT).map(([k,c])=>`<optgroup label="${c.n}">${ITEMS.filter(i=>i.cat===k).map(i=>`<option value="${i.id}" ${t===i.id?"selected":""}>${esc(i.nama)} (${threadsCount(i.id)})</option>`).join("")}</optgroup>`).join("")}</select>
+    ${BYID[t]?`<div class="card" style="margin-top:12px;padding:14px"><b>${esc(BYID[t].nama)}</b><p class="muted small" style="margin-top:4px">${esc(BYID[t].ringkas)}</p><button type="button" class="link" style="margin-top:8px" data-item="${t}">Buka panduan lengkap</button></div>`:""}
+  </div><div>${threadsHtml(t)}</div></div>`;
+}
+
+/* ---------- Keranjang ---------- */
+function nextDates(){const out=[];const d=new Date();for(let i=2;i<=8;i++){const x=new Date(d);x.setDate(d.getDate()+i);out.push(x);}return out;}
+function vCart(v){
+  const tot=S.cart.reduce((s,c)=>s+c.total,0);
+  v.innerHTML=`<h2>Keranjang</h2>
+  ${S.cart.length?`<div class="two" style="margin-top:18px"><div style="display:flex;flex-direction:column;gap:10px">${S.cart.map((c,i)=>`<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;gap:10px"><div><b>${esc(c.label)}</b><div class="muted small">${esc(c.by)}</div><div class="small" style="margin-top:4px"><span class="badge ${c.lokal>=.99?"ok":"warn"}">${Math.round(c.lokal*100)}% lokal</span></div></div><div style="text-align:right"><b>${rp(c.total)}</b><div><button type="button" class="link danger" data-del="${i}">Hapus</button></div></div></div></div>`).join("")}</div>
+    <div class="card"><div style="display:flex;justify-content:space-between"><h3>Total</h3><b style="font-size:20px">${rp(tot)}</b></div>
+      <label class="f" for="tgl">Dibutuhkan pada</label><select id="tgl">${nextDates().map(d=>`<option value="${d.toISOString()}">${fd(d)}</option>`).join("")}</select>
+      <p class="note" style="margin-top:8px">Diantar ke ${esc(kabName(S.kab))}${S.kec?", Kec. "+esc(S.kec):""}.</p>
+      <button type="button" class="btn wide" style="margin-top:14px" data-checkout>Pesan sekarang</button><p class="note" style="margin-top:8px">Prototipe: pesanan tidak benar-benar dikirim.</p></div></div>`
+   :`<div class="empty" style="margin-top:18px">Keranjang masih kosong. Pilih upakara di katalog, lalu pesan jadi atau beli bahannya.<br><button type="button" class="btn" style="margin-top:14px" data-go="katalog">Buka katalog</button></div>`}
+  ${S.orders.length?`<h3 style="margin:28px 0 10px">Riwayat pesanan</h3>${S.orders.slice().reverse().map(o=>`<div class="card" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b>${fd(o.tgl)}</b><span class="badge soft">Diteruskan</span></div><div class="muted small" style="margin-top:4px">${o.labels.map(esc).join(", ")}</div><div class="small" style="margin-top:4px">${rp(o.total)} · ${Math.round(o.lokal*100)}% lokal</div></div>`).join("")}`:""}`;
+}
+
+/* ---------- Dampak ---------- */
+const BASE={janur:420000,bunga:310000,jajan:260000,jeruk:180000,salak:90000,kebun:150000,bambu:60000,serati:540000};
+function vImpact(v){
+  const base=Object.values(BASE).reduce((a,b)=>a+b,0);
+  const ord=S.orders.reduce((s,o)=>s+o.total,0),ordL=S.orders.reduce((s,o)=>s+o.total*o.lokal,0);
+  const swapped=S.orders.reduce((s,o)=>s+(o.swapped||0),0);
+  const byCat={};S.orders.forEach(o=>(o.cats||[]).forEach(c=>byCat[c]=(byCat[c]||0)+1));
+  v.innerHTML=`<h2>Dampak</h2><p class="muted" style="margin-top:6px">Indikator yang dibandingkan dengan kondisi awal hasil survei keluarga, pedagang, dan produsen.</p>
+  <div class="stats" style="margin-top:18px"><div class="stat big" style="grid-column:1/-1"><b>${rp((base+ordL)*(1-KOMISI))}</b><span>mengalir ke produsen dan serati lokal (simulasi + pesanan demo)</span></div>
+    <div class="stat"><b>${S.orders.length?Math.round(ordL/ord*100)+"%":"–"}</b><span>bahan lokal pada pesanan demo</span></div>
+    <div class="stat"><b>${swapped}</b><span>bahan luar Bali diganti produk lokal</span></div>
+    <div class="stat"><b>${new Set(SERATI.map(s=>s.kab)).size}/9</b><span>kabupaten/kota terlayani</span></div>
+    <div class="stat"><b>${rp((base+ord)*KOMISI)}</b><span>pendapatan platform (komisi ${KOMISI*100}%)</span></div></div>
+  <div class="two" style="margin-top:20px"><div class="card"><h3>Model bisnis</h3><p class="muted" style="margin-top:8px;font-size:14.5px">Keluarga membayar bahan atau banten jadi. Serati mengambil komisi ${KOMISI*100}% per transaksi. Produsen dan serati mendapat permintaan pasti sebelum hari raya, sehingga sisa janur dan bunga yang layu bisa ditekan. Serati Lens dan konten edukasi menjadi pintu masuk gratis.</p></div>
+  <div class="card"><h3>Pesanan demo per kategori</h3>${Object.entries(CAT).map(([k,c])=>`<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${c.n}</span><b>${byCat[k]||0}</b></div><div class="bar"><i style="background:${c.c};width:${Math.min(100,(byCat[k]||0)*20)}%"></i></div></div>`).join("")}</div></div>
+  <p class="note" style="margin-top:14px">Semua angka adalah data simulasi. <button type="button" class="link danger" data-reset>Hapus data demo</button></p>`;
+}
+
+/* ---------- Add bar (detail) ---------- */
+function renderAddbar(){const el=document.getElementById("addbar");el.hidden=true;}
+
+/* ---------- Step mode dialog ---------- */
+function stepDialog(i){
+  const it=BYID[S.item];const d=document.getElementById("dlg");d.className="big";const n=it.langkah.length;i=Math.max(0,Math.min(n-1,i));
+  d.innerHTML=`<div class="stepview"><div class="small muted" style="font-weight:700">${esc(it.nama)} · langkah ${i+1} dari ${n}</div><div class="prog" style="margin:10px 0 18px"><i style="width:${(i+1)/n*100}%"></i></div>
+  <div class="num">${i+1}</div><h3>${esc(it.langkah[i][0])}</h3><p>${esc(it.langkah[i][1])}</p></div>
+  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:22px"><button type="button" class="btn ghost" data-stepmode="${i-1}" ${i===0?"disabled":""}>Sebelumnya</button><span style="display:flex;gap:8px"><button type="button" class="btn ghost" data-close>Tutup</button>${i<n-1?`<button type="button" class="btn" data-stepmode="${i+1}" data-markdone="${i}">Selesai, lanjut</button>`:`<button type="button" class="btn" data-close data-markdone="${i}">Selesai</button>`}</span></div>`;
+  if(!d.open)d.showModal();
+}
+
+/* ================= EVENTS ================= */
+document.addEventListener("input",e=>{const t=e.target;if(t.id==="q"){S.q=t.value;clearTimeout(window.__qt);window.__qt=setTimeout(render,120);}});
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.id==="kec"){S.kec=t.value;save();render();return;}
+  if(t.dataset.pick){S.pick[t.dataset.pick]=t.value;render();return;}
+  if(t.dataset.topicsel!==undefined){S.topic=t.value;S.replyTo=null;render();return;}
+  if(t.dataset.have!==undefined){const a=S.have[S.item]||[];a[+t.dataset.have]=t.checked;S.have[S.item]=a;save();return;}
+  if(t.dataset.lensfile!==undefined&&t.files&&t.files[0]){
+    const f=t.files[0];if(S.lens.url)URL.revokeObjectURL(S.lens.url);
+    const blob=await compress(f);S.lens={...S.lens,file:blob,url:URL.createObjectURL(blob),res:null,err:null,fb:null};t.value="";render();
+    if(LIVE.lens)identify();
+    return;
+  }
+  const ph=t.dataset.upphoto,vd=t.dataset.upvideo;
+  if((ph||vd)&&t.files&&t.files[0]){const f=ph?await compress(t.files[0]):t.files[0];await uploadMedia(ph||vd,f,!!ph);t.value="";}
+});
+async function uploadMedia(){toast("Foto dan video diunggah tim lewat dasbor Supabase");}
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("button");if(!t)return;const ds=t.dataset;
+  if(ds.go){if(document.getElementById("dlg").open)document.getElementById("dlg").close();go(ds.go);return;}
+  if(ds.item){go("detail",ds.item);return;}
+  if(ds.itemtab){const [id,tab]=ds.itemtab.split("|");S.dtab=tab;go("detail",id,{keepTab:true});return;}
+  if(ds.cat){S.cat=ds.cat;S.q="";if(S.view!=="katalog")go("katalog");else render();return;}
+  if(ds.dtab){S.dtab=ds.dtab;S.replyTo=null;render();return;}
+  if(ds.ph!==undefined){S.photoIdx=+ds.ph;render();return;}
+  if(ds.step!==undefined){const a=S.done[S.item]||[];a[+ds.step]=!a[+ds.step];S.done[S.item]=a;save();render();return;}
+  if(ds.resetsteps){S.done[ds.resetsteps]=[];save();render();return;}
+  if(ds.stepmode!==undefined){if(ds.markdone!==undefined){const a=S.done[S.item]||[];a[+ds.markdone]=true;S.done[S.item]=a;save();render();}stepDialog(+ds.stepmode);return;}
+  if("close" in ds){if(ds.markdone!==undefined){const a=S.done[S.item]||[];a[+ds.markdone]=true;S.done[S.item]=a;save();render();}if(ds.close==="wa")toast("Simulasi: membuka chat WhatsApp serati");document.getElementById("dlg").close();return;}
+  if(ds.cq){const it=BYID[S.item];const cs=S.calc[it.id]||{n:CALC[it.calc].def,lokal:false};cs.n=Math.max(1,cs.n+ +ds.cq);S.calc[it.id]=cs;render();return;}
+  if("lokal" in ds){const it=BYID[S.item];const cs=S.calc[it.id]||{n:CALC[it.calc].def,lokal:false};cs.lokal=!cs.lokal;S.calc[it.id]=cs;render();if(cs.lokal)toast("Bahan luar Bali diganti produk lokal");return;}
+  if(ds.jq){const it=BYID[S.item];S.jadi[it.id]=Math.max(1,(S.jadi[it.id]??(it.unit==="set"?1:10))+ +ds.jq);render();return;}
+  if(ds.addjadi){const it=BYID[ds.addjadi];const n=S.jadi[it.id]??(it.unit==="set"?1:10);const list=seratiFor(S.kab,it.cat);const sid=S.pick[it.id]&&list.some(s=>s.id===S.pick[it.id])?S.pick[it.id]:list[0].id;const s=SERATI.find(x=>x.id===sid);
+    S.cart.push({label:`${it.nama} ×${n}`,by:`Banten jadi · ${s.nama}, Kec. ${s.kec}`,total:it.harga*n,lokal:1,cat:it.cat,swapped:0});save();render();toast("Masuk ke keranjang");return;}
+  if(ds.addcalc){const it=BYID[ds.addcalc];const cs=S.calc[it.id]||{n:CALC[it.calc].def,lokal:false};const mats=calcMats(it,cs.n,cs.lokal);
+    S.cart.push({label:`Bahan ${it.nama} ×${cs.n}`,by:"Bahan dari produsen lokal",total:matVal(mats),lokal:matLocal(mats),cat:it.cat,swapped:mats.filter(m=>m.swapped).reduce((a,m)=>a+m.q,0)});save();render();toast("Bahan masuk ke keranjang");return;}
+  if(ds.del!==undefined){S.cart.splice(+ds.del,1);save();render();return;}
+  if("checkout" in ds){const tot=S.cart.reduce((s,c)=>s+c.total,0);const loc=tot?S.cart.reduce((s,c)=>s+c.total*c.lokal,0)/tot:1;
+    S.orders.push({tgl:document.getElementById("tgl").value,labels:S.cart.map(c=>c.label),total:tot,lokal:loc,swapped:S.cart.reduce((s,c)=>s+(c.swapped||0),0),cats:S.cart.map(c=>c.cat)});S.cart=[];save();render();toast("Pesanan diteruskan ke serati dan produsen");return;}
+  if("reset" in ds){S.cart=[];S.orders=[];save();render();toast("Data demo dihapus");return;}
+  if(ds.kab){S.kab=ds.kab;S.kec="";save();render();return;}
+  if(ds.contact){contactDialog(ds.contact);return;}
+  if(ds.orderfrom){const s=SERATI.find(x=>x.id===ds.orderfrom);S.kab=s.kab;S.kec=s.kec;save();S.cat=s.lay[0];go("katalog");toast(`Pilih upakara, lalu pesan ke ${s.nama}`);return;}
+  if("daftar" in ds){daftarDialog();return;}
+  if("senddaftar" in ds){const nama=document.getElementById("dn").value.trim();if(!nama){toast("Isi nama usaha dulu");return;}
+    const rec={nama:nama.slice(0,60),kab:S.kab,kec:document.getElementById("dk").value,layanan:[...document.querySelectorAll(".dl:checked")].map(x=>x.value)};document.getElementById("dlg").close();
+    if(LIVE.sb){try{const {error}=await LIVE.sb.from("pendaftaran_serati").insert(rec);if(error)throw error;toast("Pendaftaran terkirim, tim akan memverifikasi");}catch(err){toast("Pendaftaran belum bisa dikirim, coba lagi");}}else toast("Mode lokal: pendaftaran belum terkirim ke server");return;}
+  if("identify" in ds){identify();return;}
+  if(ds.manual!==undefined){S.lens.manual=ds.manual||null;render();return;}
+  if(ds.fb){const r=S.lens.res;let actual=r&&r.id;if(ds.fb==="fix"){actual=document.getElementById("fbsel").value;if(!actual){toast("Pilih jenis yang benar dulu");return;}}
+    S.lens.fb="sent";render();
+    if(LIVE.sb){try{await LIVE.sb.from("lens_feedback").insert({pred:(r&&r.id)||null,actual,conf:(r&&r.keyakinan)||0});}catch(err){}}
+    if(ds.fb==="fix"&&BYID[actual])toast("Tercatat sebagai "+BYID[actual].nama);return;}
+  if(ds.savephoto){if(S.lens.file){await uploadMedia(ds.savephoto,S.lens.file,true);}return;}
+  if(ds.topicgo){S.topic=ds.topicgo;go("diskusi");return;}
+  if(ds.reply){S.replyTo=ds.reply;render();const el=document.getElementById("np");if(el){el.focus();el.scrollIntoView({block:"center"});}return;}
+  if("cancelreply" in ds){S.replyTo=null;render();return;}
+  if(ds.post){const el=document.getElementById("np");const text=el.value.trim();const nmEl=document.getElementById("nm");const name=((nmEl&&nmEl.value.trim())||"Warga").slice(0,40);
+    if(!text){toast("Tulis sesuatu dulu");return;}
+    if(/(\+?62|08)\d[\d\s-]{7,}/.test(text)){toast("Hapus nomor telepon dari pesanmu");return;}
+    lsSet("serati-nama",name);
+    const rec={topic:ds.post,parent:S.replyTo||null,text:text.slice(0,600),kab:S.kab,name,author:LIVE.me};
+    t.disabled=true;
+    if(LIVE.sb&&LIVE.forum==="ok"){
+      try{const {error}=await LIVE.sb.from("posts").insert(rec);if(error)throw error;el.value="";S.replyTo=null;await loadPosts(false);toast("Terkirim");}
+      catch(err){toast("Belum terkirim, coba lagi");t.disabled=false;}
+    }else{
+      const local=lsGet("serati-forum-lokal",[]);local.push({...rec,id:"l"+Date.now().toString(36),at:Date.now()});lsSet("serati-forum-lokal",local);
+      if(LIVE.forum!=="ok")LIVE.posts=local;el.value="";S.replyTo=null;render();toast("Tersimpan di perangkat ini");
+    }
+    return;}
+  if(ds.delpost){if(!confirm("Hapus pesan ini?"))return;const local=lsGet("serati-forum-lokal",[]).filter(p=>p.id!==ds.delpost);lsSet("serati-forum-lokal",local);if(LIVE.forum!=="ok")LIVE.posts=local;render();toast("Pesan dihapus");return;}
+});
+fromHash();render();sbInit();
+</script>
+</body></html>
