@@ -36,41 +36,58 @@ function parseModelJson(text) {
   try { return JSON.parse(m[0]); } catch (e) { return null; }
 }
 
-const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.7-flash", "gemini-2.5-flash", "gemini-flash-latest", "gemini-3.8-flash"]
+const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-lite-latest", "gemini-3.7-flash", "gemini-flash-latest", "gemini-3.8-flash"]
   .filter((m, i, a) => m && a.indexOf(m) === i);
 
 function shouldTryNextModel(status, message) {
   if (status === 404) return true;                                              // model tidak ada
   if (status >= 500) return true;                                               // model sedang sibuk/bermasalah → coba model lain
-  if (status === 400 && /model|not found|not supported|unsupported/i.test(message)) return true;
+  if (status === 400 && /model|not found|not supported|unsupported|thinking/i.test(message)) return true;
   if (status === 429 && /limit:\s*0|free.?tier/i.test(message)) return true;    // model tidak masuk kuota gratis
   return false;
 }
 
-async function askGemini(key, image, mediaType, signal) {
-  const attempts = [];
+const PER_TRY_MS = Number(process.env.LENS_TRY_MS) || 9000;   // batas tunggu per model
+const TOTAL_MS = Number(process.env.LENS_TOTAL_MS) || 27000;  // batas tunggu keseluruhan
+
+async function askGemini(key, image, mediaType, attempts = []) {
+  const deadline = Date.now() + TOTAL_MS;
   for (const model of GEMINI_MODELS()) {
-    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
-      method: "POST",
-      headers: { "x-goog-api-key": key, "content-type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ inlineData: { mimeType: mediaType, data: image } }, { text: PROMPT }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      }),
-      signal
-    });
-    if (r.ok) {
-      const data = await r.json();
-      const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-      attempts.push({ model, status: 200 });
-      return { status: 200, attempts, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+    const left = deadline - Date.now();
+    if (left < 2500) break;
+    const wait = Math.min(PER_TRY_MS, left);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), wait);
+    const generationConfig = { responseMimeType: "application/json" };
+    if (/^gemini-2\.5-/.test(model)) generationConfig.thinkingConfig = { thinkingBudget: 0 };  // tanpa "berpikir" → jauh lebih cepat
+    try {
+      const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
+        method: "POST",
+        headers: { "x-goog-api-key": key, "content-type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ inlineData: { mimeType: mediaType, data: image } }, { text: PROMPT }] }],
+          generationConfig
+        }),
+        signal: ctrl.signal
+      });
+      if (r.ok) {
+        const data = await r.json();
+        const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+        attempts.push({ model, status: 200 });
+        return { status: 200, attempts, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+      }
+      let message = "";
+      try { const e = await r.json(); message = String((e && e.error && (e.error.message || e.error.status)) || ""); } catch (e) {}
+      attempts.push({ model, status: r.status, message: message.slice(0, 300) });
+      if (!shouldTryNextModel(r.status, message)) return { status: r.status, attempts };
+    } catch (e) {
+      const timeout = e && e.name === "AbortError";
+      attempts.push({ model, status: timeout ? 504 : 502, message: timeout ? "tidak menjawab dalam " + Math.round(wait / 1000) + " detik" : String((e && e.message) || e).slice(0, 200) });
+    } finally {
+      clearTimeout(timer);
     }
-    let message = "";
-    try { const e = await r.json(); message = String((e && e.error && (e.error.message || e.error.status)) || ""); } catch (e) {}
-    attempts.push({ model, status: r.status, message: message.slice(0, 300) });
-    if (!shouldTryNextModel(r.status, message)) return { status: r.status, attempts };
   }
-  const last = attempts[attempts.length - 1] || { status: 502 };
+  const last = attempts[attempts.length - 1] || { status: 504 };
   return { status: last.status, attempts };
 }
 
@@ -105,13 +122,14 @@ async function diagnose(req, res) {
   };
   if (!key) { res.status(200).json(info); return; }
   if (rateLimited(ip)) { res.status(429).json({ error: "rate_limited" }); return; }
-  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 25000);
+  const attempts = [];
+  const t0 = Date.now();
   try {
-    const t0 = Date.now();
-    const r = await askGemini(key, TEST_PNG, "image/png", ctrl.signal);
-    info.percobaan = r.attempts; info.waktu_ms = Date.now() - t0; info.berhasil = r.status === 200;
-  } catch (e) { info.berhasil = false; info.galat = e && e.name === "AbortError" ? "Gemini tidak menjawab dalam 25 detik" : String(e && e.message || e); }
-  finally { clearTimeout(timer); }
+    const r = await askGemini(key, TEST_PNG, "image/png", attempts);
+    info.berhasil = r.status === 200;
+    if (info.berhasil) info.model_dipakai = attempts[attempts.length - 1].model;
+  } catch (e) { info.berhasil = false; info.galat = String((e && e.message) || e); }
+  info.percobaan = attempts; info.waktu_ms = Date.now() - t0;
   res.status(200).json(info);
 }
 
@@ -137,9 +155,9 @@ module.exports = async function handler(req, res) {
   if (image.length > MAX_B64) { res.status(413).json({ error: "too_large" }); return; }
 
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 25000);
+  const timer = setTimeout(() => ctrl.abort(), 28000);
   try {
-    const result = geminiKey ? await askGemini(geminiKey, image, mediaType, ctrl.signal)
+    const result = geminiKey ? await askGemini(geminiKey, image, mediaType)
                              : await askClaude(claudeKey, image, mediaType, ctrl.signal);
     if (result.status !== 200) {
       console.error("Serati Lens: penyedia AI menolak", JSON.stringify(result.attempts || result.status));
