@@ -86,8 +86,8 @@ async function geminiTry(key, model, image, mediaType, wait) {
 
 /* ---------- Penyedia berformat OpenAI: Groq & GitHub Models ---------- */
 const OAI = {
-  groq:   { url: "https://api.groq.com/openai/v1/chat/completions", maxKey: "max_completion_tokens", headers: {} },
-  github: { url: "https://models.github.ai/inference/chat/completions", maxKey: "max_tokens", headers: { "accept": "application/vnd.github+json", "x-github-api-version": "2022-11-28" } }
+  groq:   { urls: ["https://api.groq.com/openai/v1/chat/completions"], maxKey: "max_completion_tokens" },
+  github: { urls: ["https://models.github.ai/inference/chat/completions", "https://models.inference.ai.azure.com/chat/completions"], maxKey: "max_tokens" }
 };
 async function callOAI(p, key, model, image, mediaType, wait, jsonMode) {
   const cfg = OAI[p];
@@ -98,15 +98,31 @@ async function callOAI(p, key, model, image, mediaType, wait, jsonMode) {
   };
   body[cfg.maxKey] = 600;
   if (jsonMode) body.response_format = { type: "json_object" };
-  const r = await timedFetch(cfg.url, {
-    method: "POST",
-    headers: Object.assign({ "authorization": "Bearer " + key, "content-type": "application/json" }, cfg.headers),
-    body: JSON.stringify(body)
-  }, wait);
-  if (!r.ok) return { status: r.status, message: await readError(r) };
-  const data = await r.json();
-  const msg = (((data.choices || [])[0] || {}).message || {});
-  return { status: 200, text: typeof msg.content === "string" ? msg.content : "" };
+  const t0 = Date.now();
+  let last = { status: 502, message: "tidak ada jawaban" };
+  for (let i = 0; i < cfg.urls.length; i++) {
+    const left = Math.max(300, wait - (Date.now() - t0));
+    if (i > 0 && left < 1000) break;
+    // alamat cadangan GitHub memakai nama model tanpa awalan "openai/"
+    const b = i > 0 ? Object.assign({}, body, { model: model.replace(/^[^/]+\//, "") }) : body;
+    const r = await timedFetch(cfg.urls[i], {
+      method: "POST",
+      headers: { "authorization": "Bearer " + key, "content-type": "application/json", "accept": "application/json" },
+      body: JSON.stringify(b)
+    }, left);
+    const raw = await r.text();
+    let data = null; try { data = JSON.parse(raw); } catch (e) {}
+    if (!r.ok) {
+      const err = data && data.error;
+      last = { status: r.status, message: String((err && (err.message || err.code)) || (typeof err === "string" ? err : "") || raw.slice(0, 120)).slice(0, 300) };
+      if (r.status === 404 || r.status >= 500) continue;          // coba alamat cadangan
+      return last;
+    }
+    const msg = data && (((data.choices || [])[0] || {}).message || {});
+    if (msg && typeof msg.content === "string") return { status: 200, text: msg.content };
+    last = { status: 502, message: "jawaban tidak dikenali: " + raw.slice(0, 60) };   // mis. "OK" → coba alamat cadangan
+  }
+  return last;
 }
 async function oaiTry(p, key, model, image, mediaType, wait) {
   const t0 = Date.now();
