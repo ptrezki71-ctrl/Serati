@@ -36,11 +36,12 @@ function parseModelJson(text) {
   try { return JSON.parse(m[0]); } catch (e) { return null; }
 }
 
-const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.8-flash", "gemini-3.7-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.7-flash", "gemini-2.5-flash", "gemini-flash-latest", "gemini-3.8-flash"]
   .filter((m, i, a) => m && a.indexOf(m) === i);
 
 function shouldTryNextModel(status, message) {
   if (status === 404) return true;                                              // model tidak ada
+  if (status >= 500) return true;                                               // model sedang sibuk/bermasalah → coba model lain
   if (status === 400 && /model|not found|not supported|unsupported/i.test(message)) return true;
   if (status === 429 && /limit:\s*0|free.?tier/i.test(message)) return true;    // model tidak masuk kuota gratis
   return false;
