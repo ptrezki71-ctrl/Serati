@@ -36,28 +36,41 @@ function parseModelJson(text) {
   try { return JSON.parse(m[0]); } catch (e) { return null; }
 }
 
-const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.7-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+const GEMINI_MODELS = () => [process.env.GEMINI_MODEL, "gemini-3.8-flash", "gemini-3.7-flash", "gemini-flash-latest", "gemini-2.5-flash"]
   .filter((m, i, a) => m && a.indexOf(m) === i);
 
+function shouldTryNextModel(status, message) {
+  if (status === 404) return true;                                              // model tidak ada
+  if (status === 400 && /model|not found|not supported|unsupported/i.test(message)) return true;
+  if (status === 429 && /limit:\s*0|free.?tier/i.test(message)) return true;    // model tidak masuk kuota gratis
+  return false;
+}
+
 async function askGemini(key, image, mediaType, signal) {
-  let last = { status: 502 };
+  const attempts = [];
   for (const model of GEMINI_MODELS()) {
     const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
       method: "POST",
       headers: { "x-goog-api-key": key, "content-type": "application/json" },
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ inlineData: { mimeType: mediaType, data: image } }, { text: PROMPT }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.2 }
+        generationConfig: { responseMimeType: "application/json" }
       }),
       signal
     });
-    if (r.status === 404) { last = { status: 404 }; continue; }   // model tidak tersedia → coba model berikutnya
-    if (!r.ok) return { status: r.status };
-    const data = await r.json();
-    const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-    return { status: 200, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+    if (r.ok) {
+      const data = await r.json();
+      const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+      attempts.push({ model, status: 200 });
+      return { status: 200, attempts, text: parts.filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("") };
+    }
+    let message = "";
+    try { const e = await r.json(); message = String((e && e.error && (e.error.message || e.error.status)) || ""); } catch (e) {}
+    attempts.push({ model, status: r.status, message: message.slice(0, 300) });
+    if (!shouldTryNextModel(r.status, message)) return { status: r.status, attempts };
   }
-  return last;
+  const last = attempts[attempts.length - 1] || { status: 502 };
+  return { status: last.status, attempts };
 }
 
 async function askClaude(key, image, mediaType, signal) {
@@ -79,12 +92,35 @@ async function askClaude(key, image, mediaType, signal) {
   return { status: 200, text: (Array.isArray(data.content) ? data.content : []).filter(b => b && b.type === "text").map(b => b.text).join("") };
 }
 
+// Cek kesehatan: buka https://<situs>/api/lens?cek=1 di browser. Tidak menampilkan isi kunci.
+const TEST_PNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC";
+async function diagnose(req, res) {
+  const raw = String(process.env.GEMINI_API_KEY || "");
+  const key = raw.trim().replace(/^["']|["']$/g, "");
+  const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "anon";
+  const info = {
+    penyedia: key ? "gemini" : (process.env.ANTHROPIC_API_KEY ? "claude" : "belum ada kunci"),
+    kunci_gemini: { terpasang: !!key, panjang: key.length, diawali_AIza: key.startsWith("AIza"), ada_spasi_atau_kutip_tersalin: raw !== key }
+  };
+  if (!key) { res.status(200).json(info); return; }
+  if (rateLimited(ip)) { res.status(429).json({ error: "rate_limited" }); return; }
+  const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 25000);
+  try {
+    const t0 = Date.now();
+    const r = await askGemini(key, TEST_PNG, "image/png", ctrl.signal);
+    info.percobaan = r.attempts; info.waktu_ms = Date.now() - t0; info.berhasil = r.status === 200;
+  } catch (e) { info.berhasil = false; info.galat = e && e.name === "AbortError" ? "Gemini tidak menjawab dalam 25 detik" : String(e && e.message || e); }
+  finally { clearTimeout(timer); }
+  res.status(200).json(info);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  if (req.method === "GET" && /[?&]cek=1\b/.test(String(req.url || ""))) { await diagnose(req, res); return; }
   if (req.method !== "POST") { res.status(405).json({ error: "method_not_allowed" }); return; }
 
-  const geminiKey = process.env.GEMINI_API_KEY;
-  const claudeKey = process.env.ANTHROPIC_API_KEY;
+  const geminiKey = String(process.env.GEMINI_API_KEY || "").trim().replace(/^["']|["']$/g, "");
+  const claudeKey = String(process.env.ANTHROPIC_API_KEY || "").trim().replace(/^["']|["']$/g, "");
   if (!geminiKey && !claudeKey) { res.status(503).json({ error: "lens_not_configured" }); return; }
 
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "anon";
@@ -105,6 +141,7 @@ module.exports = async function handler(req, res) {
     const result = geminiKey ? await askGemini(geminiKey, image, mediaType, ctrl.signal)
                              : await askClaude(claudeKey, image, mediaType, ctrl.signal);
     if (result.status !== 200) {
+      console.error("Serati Lens: penyedia AI menolak", JSON.stringify(result.attempts || result.status));
       res.status(result.status === 429 ? 429 : 502).json({ error: result.status === 429 ? "rate_limited" : "upstream_error" });
       return;
     }
@@ -117,6 +154,7 @@ module.exports = async function handler(req, res) {
       .map(a => ({ id: a.id, keyakinan: clamp01(a.keyakinan) }));
     res.status(200).json({ id, keyakinan: clamp01(out.keyakinan), alasan: String(out.alasan || "").slice(0, 400), alternatif });
   } catch (e) {
+    console.error("Serati Lens: galat", e && e.name, e && e.message);
     res.status(e && e.name === "AbortError" ? 504 : 502).json({ error: "upstream_error" });
   } finally {
     clearTimeout(timer);
