@@ -3,6 +3,7 @@
 // semua penyedia yang kuncinya terpasang akan dicoba bergantian sampai ada yang menjawab.
 //   GEMINI_API_KEY    → Google Gemini (kuota gratis lewat Google AI Studio). Opsional: GEMINI_MODEL (dicoba paling awal).
 //   GROQ_API_KEY      → Groq (kuota gratis lewat console.groq.com). Opsional: GROQ_MODELS (dipisah koma).
+//   GITHUB_MODELS_TOKEN → GitHub Models (gratis, token GitHub dengan izin Models: Read-only). Opsional: GITHUB_MODELS (dipisah koma).
 //   ANTHROPIC_API_KEY → Claude API (berbayar). Opsional: LENS_MODEL.
 // Cek kesehatan di browser: /api/lens?cek=1 (gambar kecil) atau /api/lens?cek=2 (foto 800x600).
 
@@ -83,18 +84,23 @@ async function geminiTry(key, model, image, mediaType, wait) {
   return r;
 }
 
-/* ---------- Penyedia: Groq (format OpenAI) ---------- */
-async function callGroq(key, model, image, mediaType, wait, jsonMode) {
+/* ---------- Penyedia berformat OpenAI: Groq & GitHub Models ---------- */
+const OAI = {
+  groq:   { url: "https://api.groq.com/openai/v1/chat/completions", maxKey: "max_completion_tokens", headers: {} },
+  github: { url: "https://models.github.ai/inference/chat/completions", maxKey: "max_tokens", headers: { "accept": "application/vnd.github+json", "x-github-api-version": "2022-11-28" } }
+};
+async function callOAI(p, key, model, image, mediaType, wait, jsonMode) {
+  const cfg = OAI[p];
   const body = {
     model,
     messages: [{ role: "user", content: [{ type: "text", text: PROMPT }, { type: "image_url", image_url: { url: "data:" + mediaType + ";base64," + image } }] }],
-    temperature: 0.2,
-    max_completion_tokens: 600
+    temperature: 0.2
   };
+  body[cfg.maxKey] = 600;
   if (jsonMode) body.response_format = { type: "json_object" };
-  const r = await timedFetch("https://api.groq.com/openai/v1/chat/completions", {
+  const r = await timedFetch(cfg.url, {
     method: "POST",
-    headers: { "authorization": "Bearer " + key, "content-type": "application/json" },
+    headers: Object.assign({ "authorization": "Bearer " + key, "content-type": "application/json" }, cfg.headers),
     body: JSON.stringify(body)
   }, wait);
   if (!r.ok) return { status: r.status, message: await readError(r) };
@@ -102,10 +108,10 @@ async function callGroq(key, model, image, mediaType, wait, jsonMode) {
   const msg = (((data.choices || [])[0] || {}).message || {});
   return { status: 200, text: typeof msg.content === "string" ? msg.content : "" };
 }
-async function groqTry(key, model, image, mediaType, wait) {
+async function oaiTry(p, key, model, image, mediaType, wait) {
   const t0 = Date.now();
-  let r = await callGroq(key, model, image, mediaType, wait, true);
-  if ((r.status === 400 || r.status === 422) && /response_format|json/i.test(r.message || "")) r = await callGroq(key, model, image, mediaType, Math.max(1000, wait - (Date.now() - t0)), false);
+  let r = await callOAI(p, key, model, image, mediaType, wait, true);
+  if ((r.status === 400 || r.status === 422) && /response_format|json/i.test(r.message || "")) r = await callOAI(p, key, model, image, mediaType, Math.max(1000, wait - (Date.now() - t0)), false);
   return r;
 }
 
@@ -125,16 +131,20 @@ async function claudeTry(key, model, image, mediaType, wait) {
 /* ---------- Daftar model yang dicoba (urutan: kualitas & kecepatan, diselang-seling antarpenyedia) ---------- */
 function uniq(a) { return a.filter((m, i) => m && a.indexOf(m) === i); }
 function candidates() {
-  const gk = cleanKey(process.env.GEMINI_API_KEY), qk = cleanKey(process.env.GROQ_API_KEY), ck = cleanKey(process.env.ANTHROPIC_API_KEY);
+  const gk = cleanKey(process.env.GEMINI_API_KEY), qk = cleanKey(process.env.GROQ_API_KEY), hk = cleanKey(process.env.GITHUB_MODELS_TOKEN), ck = cleanKey(process.env.ANTHROPIC_API_KEY);
+  const list = v => String(v || "").split(",").map(x => x.trim());
   const gem = gk ? uniq([process.env.GEMINI_MODEL, "gemini-3.8-flash", "gemini-3.7-flash", "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.5-flash-lite"])
     .map(m => ({ provider: "gemini", model: m, run: (img, mt, w) => geminiTry(gk, m, img, mt, w) })) : [];
-  const grq = qk ? uniq([...(String(process.env.GROQ_MODELS || "").split(",").map(x => x.trim())), "qwen/qwen3.8-27b", "qwen/qwen3.6-27b", "meta-llama/llama-4-scout-17b-16e-instruct"])
-    .map(m => ({ provider: "groq", model: m, run: (img, mt, w) => groqTry(qk, m, img, mt, w) })) : [];
+  const ghb = hk ? uniq([...list(process.env.GITHUB_MODELS), "openai/gpt-4.1-mini", "openai/gpt-4o-mini", "openai/gpt-4.1", "openai/gpt-4o"])
+    .map(m => ({ provider: "github", model: m, run: (img, mt, w) => oaiTry("github", hk, m, img, mt, w) })) : [];
+  const grq = qk ? uniq([...list(process.env.GROQ_MODELS), "qwen/qwen3.8-27b", "qwen/qwen3.6-27b", "meta-llama/llama-4-scout-17b-16e-instruct"])
+    .map(m => ({ provider: "groq", model: m, run: (img, mt, w) => oaiTry("groq", qk, m, img, mt, w) })) : [];
   const cla = ck ? [process.env.LENS_MODEL || "claude-haiku-5-5"].map(m => ({ provider: "claude", model: m, run: (img, mt, w) => claudeTry(ck, m, img, mt, w) })) : [];
   const out = [];
-  const max = Math.max(gem.length, grq.length);
-  for (let i = 0; i < max; i++) {               // selang-seling: Gemini, Groq, Gemini, Groq, ...
+  const max = Math.max(gem.length, ghb.length, grq.length);
+  for (let i = 0; i < max; i++) {               // selang-seling: Gemini, GitHub, Groq, Gemini, GitHub, Groq, ...
     if (gem[i]) out.push(gem[i]);
+    if (ghb[i]) out.push(ghb[i]);
     if (grq[i]) out.push(grq[i]);
   }
   return out.concat(cla);
@@ -189,9 +199,10 @@ const TEST_JPG = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJCh
 async function diagnose(req, res) {
   const g = String(process.env.GEMINI_API_KEY || ""), q = String(process.env.GROQ_API_KEY || "");
   const info = {
-    penyedia_terpasang: { gemini: !!cleanKey(g), groq: !!cleanKey(q), claude: !!cleanKey(process.env.ANTHROPIC_API_KEY) },
+    penyedia_terpasang: { gemini: !!cleanKey(g), github: !!cleanKey(process.env.GITHUB_MODELS_TOKEN), groq: !!cleanKey(q), claude: !!cleanKey(process.env.ANTHROPIC_API_KEY) },
     kunci_gemini: { terpasang: !!cleanKey(g), panjang: cleanKey(g).length, ada_spasi_atau_kutip_tersalin: g !== cleanKey(g) },
-    kunci_groq: { terpasang: !!cleanKey(q), diawali_gsk: cleanKey(q).startsWith("gsk_"), ada_spasi_atau_kutip_tersalin: q !== cleanKey(q) }
+    kunci_groq: { terpasang: !!cleanKey(q), diawali_gsk: cleanKey(q).startsWith("gsk_"), ada_spasi_atau_kutip_tersalin: q !== cleanKey(q) },
+    token_github: { terpasang: !!cleanKey(process.env.GITHUB_MODELS_TOKEN), diawali_github_pat: cleanKey(process.env.GITHUB_MODELS_TOKEN).startsWith("github_pat_") }
   };
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "anon";
   if (rateLimited(ip)) { res.status(429).json({ error: "rate_limited" }); return; }
